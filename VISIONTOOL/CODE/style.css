@@ -36,6 +36,15 @@
     cursor: pointer;
     display: inline-block;
 }
+.footer{
+    width: 80%;
+    margin: 50px auto;
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 200px;
+    background-color: rgb(224, 224, 224);
+}
 .noDeco{
     text-decoration: none;
     color: black;
@@ -109,13 +118,18 @@
 .tool:hover{
     background-color: #e62f2f;
 }
+.userBox{
+    width: 20%;
+    margin: 0px auto;
+    text-align: right;
+}
 #container{
     width: 80%;
     margin: 50px auto;
     padding: 30px;
     box-sizing: border-box;
     text-align: center;
-    margin-bottom: 200px;
+    margin-bottom: 50px;
     background-color: rgb(255, 248, 240);
 }
 #imgBox{

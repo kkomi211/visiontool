@@ -43,16 +43,29 @@
         </div>
         <div id="container">
             <div class="userBox">
-                <div class="nanum-gothic-extrabold detailTitle">로그인</div>
+                <div class="nanum-gothic-extrabold detailTitle">회원가입</div>
                 <div class="lineSpace">
                     아이디 : <input type="text" v-model="userId">
+                    <button>중복확인</button>
                 </div>
                 <div class="lineSpace">
                     비밀번호 : <input type="password" v-model="userPsd">
                 </div>
-                <button @click="fnLogin">로그인</button>
-                <button @click="fnJoin">회원가입</button>
+                <div class="lineSpace">
+                    이메일 : <input type="text" v-model="userId">
+                </div>
+                <div class="lineSpace">
+                    이름 : <input type="password" v-model="userPsd">
+                </div>
+                <div class="lineSpace">
+                    전화번호 : <input type="password" v-model="userPsd">
+                </div>
+                <div class="lineSpace">
+                    집 주소 : <input type="password" v-model="userPsd">
+                    <button>주소 찾기 api</button>
+                </div>
             </div>
+            <button>가입하기</button>
         </div>
         <div class="footer gray">
             <div>
