@@ -1,0 +1,152 @@
+.search {
+    position: absolute;
+    left: 230px;
+    top: 20px;
+}
+.iconSmall{
+    font-size: 28px;
+    cursor: pointer;
+}
+.inputBox{
+    height: 20px;
+    width: 200px;
+    position: absolute;
+    left: 10px;
+    top: 20px;
+}
+#title{
+    height: 300px;
+    position: relative;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 0px auto;
+    display: flex;
+    align-items: center;
+    
+}
+.bold{
+    font-weight: bold;
+}
+.lineSpace{
+    margin: 20px;
+}
+#WebName{
+    margin: 30px auto;
+    font-size: 50px;
+    cursor: pointer;
+    display: inline-block;
+}
+.noDeco{
+    text-decoration: none;
+    color: black;
+    box-sizing: border-box;
+}
+.nanum-gothic-regular {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.nanum-gothic-bold {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.nanum-gothic-extrabold {
+  font-family: "Nanum Gothic", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+#rightBox{
+    width: 20%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 60px;
+    text-align: left;
+    background-color: #ff5252;
+    color: white;
+    padding: 0px 30px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 2%;
+}
+.rightBox-Text{
+    cursor: pointer;
+    font-size: 15px;
+}
+.rightBox-icon{
+    font-size: 30px;
+    cursor: pointer;
+}
+#category{
+    margin: 0px auto;
+    width: 80%;
+    color: white;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+    background-color: #ff5252;
+    font-size: 20px;
+    box-sizing: border-box;
+}
+.contents{
+    box-sizing: border-box;
+}
+.tool{
+    align-items: center;
+    width: 20%;
+    height: 50px;
+    cursor: pointer;
+    background-color: #ff5252;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+.tool:hover{
+    background-color: #e62f2f;
+}
+#container{
+    width: 80%;
+    margin: 50px auto;
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 200px;
+    background-color: rgb(255, 248, 240);
+}
+#imgBox{
+    width: 60%;
+    height: 400px;
+    text-align: center;
+    margin: 0px auto;
+    display: flex;
+    align-items: center;
+    
+}
+.companyMap{
+    width: 30%;
+}
+#imgBox .bigImg{
+    width: 60%;
+    border: 2px solid black;
+    height: 100%;
+    cursor: pointer;
+}
+
+#imgBox .img{
+   width: 16%;
+   height: 30%; 
+   border: 1px solid black;
+   cursor: pointer;
+}
+.detailTitle{
+    margin: 50px;
+    font-size: 40px;
+}
+.gray{
+    color: gray;
+}

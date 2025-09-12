@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div id="title">
+            <div id="title-Search">
+                <input type="text" class="inputBox">
+                <span class="material-symbols-outlined search iconSmall">search</span>
+            </div>
+            <div id="WebName">
+                <a href="main.html" class="noDeco">
+                    <span class="nanum-gothic-regular">비전툴 </span>  
+                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                </a>
+            </div>
+            <div id="rightBox">
+                <span class="rightBox-Text" v-if="loginFlg == false" @click="fnLogin">로그인 </span>
+                <span v-if="loginFlg==true" class="rightBox-Text" @click="loginFlg = false">로그아웃 </span>
+                <span v-if="loginFlg==true" class="rightBox-Text" >마이페이지 </span>
+                <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
+            </div>
+        </div>
+        <div id="category">
+            <span class="tool">드라이버</span>
+            <span class="tool">드라이버</span>
+            <span class="tool">드라이버</span>
+            <span class="tool">드라이버</span>
+            <span class="tool">드라이버</span>
+            <span class="tool">드라이버</span>
+        </div>
+        <div id="container">
+            <div class="nanum-gothic-extrabold detailTitle">로그인</div>
+            <div class="lineSpace">
+                아이디 : <input type="text" v-model="userId">
+            </div>
+            <div class="lineSpace">
+                비밀번호 : <input type="password" v-model="userPsd">
+            </div>
+            <button @click="fnLogin">로그인</button>
+            <button @click="fnJoin">회원가입</button>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 변수 - (key : value)
+                loginFlg : false,
+                userId : "",
+                userPsd : ""
+            };
+        },
+        methods: {
+            // 함수(메소드) - (key : function())
+            fnLogin: function () {
+                let self = this;
+                let param = {
+                    userId : self.userId,
+                    userPsd : self.userPsd
+                };
+                console.log(self.userId);
+                
+                $.ajax({
+                    url: "http://localhost:3009/tools/login",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        if(data.info == null){
+                            alert("아이디/비밀번호가 잘못되었습니다!")
+                            return;
+                        }
+                        location.href="main.html?userId="+data.info.USER_ID;
+                    }
+                });
+            },
+            fnJoin(){
+                location.href="join.html";
+            }
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+        }
+    });
+
+    app.mount('#app');
+</script>
