@@ -27,29 +27,28 @@
                 </a>
             </div>
             <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
+                <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
+                <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
                 <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
             </div>
         </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
+        <div id="left_container">
+            <div class="bigLineSpace cursor" @click="fnMyPage">내 정보</div>
+            <div class="bigLineSpace cursor" @click="fnEditInfoPage">내 정보 수정</div>
+            <div class="bigLineSpace cursor" @click="fnOrderList">주문 내역</div>
+            <div class="bigLineSpace cursor" @click="fnQNA">문의 하기</div>
         </div>
         <div id="container">
-            <div class="userBox">
-                <div class="nanum-gothic-extrabold detailTitle">로그인</div>
-                <div class="lineSpace">
-                    아이디 : <input type="text" v-model="userId">
-                </div>
-                <div class="lineSpace">
-                    비밀번호 : <input type="password" v-model="userPsd">
-                </div>
-                <button @click="fnLogin">로그인</button>
-                <button @click="fnJoinPage">회원가입</button>
+            <div class="nanum-gothic-extrabold detailTitle">주문 내역</div>
+            <div class="USERBox">
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">아이디 :</span> {{info.USER_ID}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">닉네임 :</span> {{info.USERNAME}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">이메일 :</span> {{info.EMAIL}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">주 소 :</span> {{info.ADDRESS}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">휴대폰 :</span> {{info.PHONE_NUMBER}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">가입일 :</span> {{info.CDATETIME}}</div>
+                <div class="lineSpace nanum-gothic-regular"><span class="bold">최근 정보 수정일 :</span> {{info.UDATETIME}}</div>
+                <div style="text-align: right;"><button @click="fnEditInfoPage">정보 수정하기</button></div>
             </div>
         </div>
         <div class="footer gray">
@@ -71,50 +70,59 @@
         data() {
             return {
                 // 변수 - (key : value)
-                loginFlg : false,
+                loginFlg : true,
                 userId : "",
-                userPsd : ""
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnLogin: function () {
+            fnInfo: function () {
                 let self = this;
                 let param = {
-                    userId : self.userId,
-                    userPsd : self.userPsd
+                    userId : self.userId
                 };
-                console.log(self.userId);
-                
                 $.ajax({
-                    url: "http://localhost:3009/tools/login",
+                    url: "http://localhost:3009/tools/checkid",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data);
-                        if(data.info == null){
-                            alert("아이디/비밀번호가 잘못되었습니다!")
-                            return;
-                        }
-                        location.href="main.html?userId="+data.info.USER_ID;
+                        self.info = data.info;
                     }
                 });
             },
-            fnJoinPage(){
-                location.href="join.html";
-            },
-            fnLoginPage(){
-                location.href="login.html";
-            },
-            fnShowTool(type){
+            fnEditInfoPage(){
                 let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+                location.href=`edit-user.html?userId=${self.userId}`;
+            },
+            fnMyPage(){
+                let self = this;
+                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            },
+            fnOrderList(){
+                let self = this;
+                location.href=`order-list.html?userId=${self.userId}`;
+            },
+            fnQNA(){
+                let self = this;
+                location.href=`user-qna.html?userId=${self.userId}`;
+            },
+            fnLogout(){
+                location.href="main.html";
+            },
+            fnMain(){
+                let self = this;
+                location.href=`main.html?userId=${self.userId}`;
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            const queryParams = new URLSearchParams(window.location.search);
+            self.userId = queryParams.get('userId') || '';
+            self.loginFlg = queryParams.get('loginFlg') || false;
+            self.fnInfo();            
         }
     });
 

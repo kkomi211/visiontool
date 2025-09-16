@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div id="title">
+            <div id="title-admin">
+                <a class="cursor" @click="fnAddProduct">상품 등록</a>
+                <a class="cursor" @click="fnEditProduct">상품 수정</a>
+            </div>
+            <div id="WebName">
+                <a href="admin-main.html" class="noDeco">
+                    <span class="nanum-gothic-regular">비전툴 </span>  
+                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                </a>
+            </div>
+            <div id="admin-rightBox">
+                <span @click="fnLogout" class="cursor">로그아웃 </span>
+            </div>
+        </div>
+        <div class="big-search">
+            <input type="text" class="big-input">
+            <span class="material-symbols-outlined iconSmall bold white">search</span>
+        </div>
+        <hr>
+        <div id="admin-container">
+            <div>
+                <div class="nanum-gothic-extrabold detailTitle white"><a class="cursor">상품 등록</a></div>
+                    <table>
+                        <tr>
+                            <th>상품번호</th>
+                            <td><input type="text" v-model="productId"></td>
+                        </tr>
+                        <tr>
+                            <th>상품이름</th>
+                            <td><input type="text" v-model="productName"></td>
+                        </tr>
+                        <tr>
+                            <th>상품종류</th>
+                            <td>
+                                <label> 전동공구<input v-model="type" type="radio" name="tool" value="전동공구"></label>
+                                <label> 수공구  <input v-model="type" type="radio" name="tool" value="수공구"></label>
+                                <label> 측량공구<input v-model="type" type="radio" name="tool" value="측량공구"></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>가격</th>
+                            <td><input type="text" v-model="price"></td>
+                        </tr>
+                        <tr>
+                            <th>개수</th>
+                            <td><input type="text" v-model="stock"></td>
+                        </tr>
+                        <tr>
+                            <th>이미지링크</th>
+                            <td><input type="text" v-model="img"></td>
+                        </tr>
+                        <tr>
+                            <th>상세설명</th>
+                            <td><textarea class="bigBox" v-model="description"></textarea></td>
+                        </tr>
+                    </table>
+                    <button @click="fnProductAdd">등록하기</button>
+            </div>
+        </div>
+        <div class="footer gray">
+            <div>
+                <span class="material-symbols-outlined iconSmall">call</span>
+                032-515-8024
+            </div>
+            <div>
+                <span class="material-symbols-outlined">location_on</span>
+                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    // let type = document.querySelector("#admin-container [name='tool']").value;
+    
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 변수 - (key : value)
+                loginFlg : false,
+                userId : "",
+                productId : "",
+                productName : "",
+                description : "",
+                price : "",
+                img : "",
+                type : "",
+                stock : 0
+            };
+        },
+        methods: {
+            // 함수(메소드) - (key : function())
+            fnProductAdd() {
+                let self = this;
+                if(self.productId == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                if(self.productName == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                if(self.description == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                if(self.price == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                if(self.img == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                if(self.type == ""){
+                    alert("빈칸이 있습니다!");
+                    return;
+                }
+                self.fnImgAdd();
+                let param = {
+                    productId : self.productId,
+                    productName : self.productName,
+                    description : self.description,
+                    price : self.price,
+                    stock : self.stock,
+                    type : self.type
+                }
+                $.ajax({
+                    url: "http://localhost:3009/tools/product/insert",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,   
+                    success: function (data) {
+                        alert("삽입이 완료되었습니다!");
+                        self.fnEditProduct();
+                    }
+                });
+            },
+            fnLoginPage(){
+                location.href="login.html";
+            },
+            fnLogout(){
+                location.href="main.html";
+            },
+            fnAddProduct(){
+                location.href="add-product.html";
+            },
+            fnEditProduct(){
+                location.href="edit-product.html";
+            },
+            fnImgAdd(){
+                let self = this;
+                let param = {
+                    img : self.img,
+                    productId : self.productId
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/img/insert",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,   
+                    success: function (data) {
+                       console.log("이미지 삽입");
+                       
+                    }
+                });
+            }
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            
+        }
+    });
+
+    app.mount('#app');
+</script>

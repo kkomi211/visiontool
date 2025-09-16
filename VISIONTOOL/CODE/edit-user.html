@@ -9,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,46 +28,40 @@
                 </a>
             </div>
             <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
+                <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
+                <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
                 <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
             </div>
         </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
+        <div id="left_container">
+            <div class="bigLineSpace cursor" @click="fnMyPage">내 정보</div>
+            <div class="bigLineSpace cursor" @click="fnEditInfoPage">내 정보 수정</div>
+            <div class="bigLineSpace cursor" @click="fnOrderList">주문 내역</div>
+            <div class="bigLineSpace cursor" @click="fnQNA">문의 하기</div>
         </div>
         <div id="container">
+            <div class="nanum-gothic-extrabold detailTitle">내 정보 수정</div>
             <div class="userBox">
-                <div class="nanum-gothic-extrabold detailTitle">회원가입</div>
                 <div class="lineSpace">
-                    아이디 : <input type="text" v-model="userId" v-if="!idCheck">
-                    <input type="text" v-model="userId" v-else disabled>
-                    <button @click="fnCheckId">중복확인</button>
+                    비밀번호 : <input type="password" v-model="info.PASSWORD">
                 </div>
                 <div class="lineSpace">
-                    비밀번호 : <input type="password" v-model="userPsd">
+                    이메일 : <input type="text" v-model="info.EMAIL">
                 </div>
                 <div class="lineSpace">
-                    이메일 : <input type="text" v-model="userEmail">
+                    닉네임 : <input type="text" v-model="info.USERNAME">
                 </div>
                 <div class="lineSpace">
-                    닉네임 : <input type="text" v-model="userName">
-                </div>
-                <div class="lineSpace">
-                    전화번호 : <input type="text" v-model="userPhone">
+                    전화번호 : <input type="text" v-model="info.PHONE_NUMBER">
                 </div>
                 <div class="lineSpace">
                     주소 : 
-                    <input type="text" v-model="userAddr" placeholder="도로명주소">
+                    <input type="text" v-model="info.ADDRESS" placeholder="도로명주소">
                     <input type="text" v-model="userDetailAddr" placeholder="상세주소"><br>
                     <input type="button" @click="execDaumPostcode()" value="주소찾기">
                 </div>
+                <div style="text-align: right;"><button @click="fnEditInfo">정보 수정하기</button></div>
             </div>
-            <button @click="fnJoin">가입하기</button>
         </div>
         <div class="footer gray">
             <div>
@@ -88,72 +82,75 @@
         data() {
             return {
                 // 변수 - (key : value)
-                idCheck : false,
-                loginFlg : false,
+                loginFlg : true,
                 userId : "",
-                userPsd : "",
-                userEmail : "",
-                userName : "",
-                userPhone : "",
-                userAddr : "",
-                userDetailAddr : ""
+                userDetailAddr : "",
+                info : {}
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnJoin: function () {
+            fnInfo: function () {
                 let self = this;
                 let param = {
-                    userId : self.userId,
-                    userPsd : self.userPsd,
-                    userEmail : self.userEmail,
-                    userName : self.userName,
-                    userPhone : self.userPhone,
-                    userAddr : self.userAddr,
-                    userDetailAddr : self.userDetailAddr
+                    userId : self.userId
                 };
-                if(!self.idCheck){
-                    alert("아이디 중복체크를 해주세요!");
-                    return;
-                }
-                $.ajax({
-                    url: "http://localhost:3009/tools/join",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,
-                    success: function (data) {
-                        console.log(data);
-                        alert("회원가입 완료!");
-                        location.href=`login.html`;
-                    }
-                });
-            },
-            fnCheckId(){
-                let self = this;
-                let param = {
-                    userId : self.userId,
-                };
-                if(self.userId == ""){
-                    alert("아이디를 입력해주세용");
-                    return;
-                }
                 $.ajax({
                     url: "http://localhost:3009/tools/checkid",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data.info);
-                        if(data.info == undefined){
-                            self.idCheck = true;
-                        } else {
-                            alert("중복된 아이디입니다!");
-                        }
+                        self.info = data.info;
                     }
                 });
             },
-            fnLoginPage(){
-                location.href="login.html";
+            fnEditInfoPage(){
+                let self = this;
+                location.href=`edit-user.html?userId=${self.userId}`;
+            },
+            fnMyPage(){
+                let self = this;
+                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            },
+            fnOrderList(){
+                let self = this;
+                location.href=`order-list.html?userId=${self.userId}`;
+            },
+            fnQNA(){
+                let self = this;
+                location.href=`user-qna.html?userId=${self.userId}`;
+            },
+            fnLogout(){
+                location.href="main.html";
+            },
+            fnEditInfo(){
+                let self = this;
+                let INFO = self.info;
+                
+                
+                let param = {   
+                    PASSWORD : INFO.PASSWORD,
+                    EMAIL : INFO.EMAIL,
+                    USERNAME : INFO.USERNAME,
+                    PHONE_NUMBER : INFO.PHONE_NUMBER,
+                    ADDRESS : INFO.ADDRESS,
+                    USER_ID : INFO.USER_ID,
+                    userDetailAddr : self.userDetailAddr
+                }
+                console.log(param);
+                
+                    
+                $.ajax({
+                    url: "http://localhost:3009/tools/user/update",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        alert("수정이 완료되었습니다!");
+                        self.fnMyPage();
+                    }
+                });
             },
             execDaumPostcode() {
                 let self = this;
@@ -181,19 +178,22 @@
                         }
 
                         // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                        self.userAddr = roadAddr;
+                        self.info.ADDRESS = roadAddr;
                     }
                 }).open()
             },
-            fnShowTool(type){
+            fnMain(){
                 let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+                location.href=`main.html?userId=${self.userId}`;
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.idCheck == false;
+            const queryParams = new URLSearchParams(window.location.search);
+            self.userId = queryParams.get('userId') || '';
+            self.loginFlg = queryParams.get('loginFlg') || false;
+            self.fnInfo();            
         }
     });
 

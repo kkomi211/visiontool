@@ -4,6 +4,7 @@ const path = require('path');
 const oracledb = require('oracledb');
 const { log } = require('console');
 
+
 const app = express();
 app.use(cors());
 
@@ -37,70 +38,7 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-app.get('/emp/list', async (req, res) => {
-  const { deptNo } = req.query;
-  let query = "";
-  if(deptNo != "" && deptNo != null){
-    query = `WHERE E.DEPTNO = ${deptNo} `
-  }
-  
-  try {
-    const result = await connection.execute(
-      `SELECT * FROM EMP E `
-      + `INNER JOIN DEPT D ON E.DEPTNO = D.DEPTNO `
-      + query
-      + `ORDER BY SAL DESC`
-    );
-    const columnNames = result.metaData.map(column => column.name);
-    // 쿼리 결과를 JSON 형태로 변환
-    const rows = result.rows.map(row => {
-      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
-      const obj = {};
-      columnNames.forEach((columnName, index) => {
-        obj[columnName] = row[index];
-      });
-      return obj;
-    });
-    // 리턴
-    res.json({
-        result : "success",
-        empList : rows
-    });
-  } catch (error) {
-    console.error('Error executing query', error);
-    res.status(500).send('Error executing query');
-  }
-});
 
-app.get('/emp/info', async (req, res) => {
-  const { empNo } = req.query;
-  try {
-    const result = await connection.execute(
-      `SELECT E.*, DNAME, EMPNO "empNo", ENAME "eName", JOB "job", E.DEPTNO "selectDept" `
-      + `FROM EMP E `
-      + `INNER JOIN DEPT D ON E.DEPTNO = D.DEPTNO `
-      + `WHERE EMPNO = ${empNo}`
-    );
-    const columnNames = result.metaData.map(column => column.name);
-    // 쿼리 결과를 JSON 형태로 변환
-    const rows = result.rows.map(row => {
-      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
-      const obj = {};
-      columnNames.forEach((columnName, index) => {
-        obj[columnName] = row[index];
-      });
-      return obj;
-    });
-    // 리턴
-    res.json({
-        result : "success",
-        info : rows[0]
-    });
-  } catch (error) {
-    console.error('Error executing query', error);
-    res.status(500).send('Error executing query');
-  }
-});
 
 app.get('/emp/delete', async (req, res) => {
   const { empNo } = req.query;
@@ -121,99 +59,11 @@ app.get('/emp/delete', async (req, res) => {
   }
 });
 
-app.get('/emp/insert', async (req, res) => {
-  const { empNo, eName, job, selectDept } = req.query;
-
-  try {
-    await connection.execute(
-      // `INSERT INTO STUDENT (STU_NO, STU_NAME, STU_DEPT) VALUES (${stuNo}, '${name}', '${dept}')`,
-      `INSERT INTO EMP(EMPNO, ENAME, JOB, DEPTNO) VALUES(:empNo, :eName, :job, :selectDept)`,
-      [empNo, eName, job, selectDept],
-      { autoCommit: true }
-    );
-    res.json({
-        result : "success"
-    });
-  } catch (error) {
-    console.error('Error executing insert', error);
-    res.status(500).send('Error executing insert');
-  }
-});
-
-app.get('/emp/update', async (req, res) => {
-  const { empNo, eName, job, selectDept } = req.query;
-
-  try {
-    await connection.execute(
-      `UPDATE EMP SET `
-      + `ENAME = :eName, JOB = :job, DEPTNO = :selectDept `
-      + `WHERE EMPNO = :empNo`,
-      [eName, job, selectDept, empNo],
-      { autoCommit: true }
-    );
-    res.json({
-        result : "success"
-    });
-  } catch (error) {
-    console.error('Error executing insert', error);
-    res.status(500).send('Error executing insert');
-  }
-});
-
-
-app.get('/prof/list', async (req, res) => {
-  const { } = req.query;
+app.get('/tools/login', async (req, res) => {
+  const { userId, userPsd } = req.query;
   try {
     const result = await connection.execute(
-      `SELECT * FROM PROFESSOR`
-    );
-    const columnNames = result.metaData.map(column => column.name);
-    // 쿼리 결과를 JSON 형태로 변환
-    const rows = result.rows.map(row => {
-      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
-      const obj = {};
-      columnNames.forEach((columnName, index) => {
-        obj[columnName] = row[index];
-      });
-      return obj;
-    });
-    // 리턴
-    res.json({
-        result : "success",
-        profList : rows
-    });
-  } catch (error) {
-    console.error('Error executing query', error);
-    res.status(500).send('Error executing query');
-  }
-});
-
-app.get('/prof/delete', async (req, res) => {
-  const { profNo } = req.query;
-
-  try {
-    await connection.execute(
-      // `INSERT INTO STUDENT (STU_NO, STU_NAME, STU_DEPT) VALUES (${stuNo}, '${name}', '${dept}')`,
-      `DELETE FROM PROFESSOR WHERE PROFNO = '${profNo}'`,
-      [],
-      { autoCommit: true }
-    );
-    res.json({
-        result : "success"
-    });
-  } catch (error) {
-    console.error('Error executing delete', error);
-    res.status(500).send('Error executing delete');
-  }
-});
-
-app.get('/prof/info', async (req, res) => {
-  const { profNo } = req.query;
-  try {
-    const result = await connection.execute(
-      `SELECT P.*, PROFNO "profNo", NAME "name", ID "id", POSITION "position", PAY "pay" `
-      + `FROM PROFESSOR P `
-      + `WHERE PROFNO = ${profNo}`
+      `SELECT * FROM TOOL_USERS WHERE USER_ID = '${userId}' AND PASSWORD = '${userPsd}'`
     );
     const columnNames = result.metaData.map(column => column.name);
     // 쿼리 결과를 JSON 형태로 변환
@@ -236,15 +86,42 @@ app.get('/prof/info', async (req, res) => {
   }
 });
 
-app.get('/prof/update', async (req, res) => {
-  const { profNo, name, id, position, pay } = req.query;
+app.get('/tools/checkid', async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_USERS WHERE USER_ID = '${userId}'`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+    // 리턴
+    res.json({
+        result : "success",
+        info : rows[0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
 
+app.get('/tools/join', async (req, res) => {
+  const { userId, userPsd, userEmail, userName, userPhone, userAddr, userDetailAddr } = req.query;
+  let Addr = userAddr + " " + userDetailAddr;
+  
   try {
     await connection.execute(
-      `UPDATE PROFESSOR SET `
-      + `NAME = :name, ID = :id, POSITION = :position, PAY = :pay `
-      + `WHERE PROFNO = :profNo`,
-      [name, id, position, pay, profNo],
+      `INSERT INTO TOOL_USERS VALUES(:userId, :userEmail, :userPsd, :userName, :userPhone, :Addr, `
+      + `SYSDATE, SYSDATE, 'U')`,
+      [userId, userEmail, userPsd, userName, userPhone, Addr],
       { autoCommit: true }
     );
     res.json({
@@ -256,12 +133,38 @@ app.get('/prof/update', async (req, res) => {
   }
 });
 
-app.get('/board/list', async (req, res) => {
+app.get('/tools/user/update', async (req, res) => {
+  const { PASSWORD, EMAIL, USERNAME, PHONE_NUMBER, ADDRESS, USER_ID, userDetailAddr } = req.query;
+  console.log(userDetailAddr);
+  
+  let addr = ADDRESS + " " + userDetailAddr;
+  console.log(addr);
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_USERS SET `
+      + `PASSWORD = :PASSWORD, EMAIL = :EMAIL, USERNAME = :USERNAME, `
+      + `PHONE_NUMBER = :PHONE_NUMBER, ADDRESS = :addr, UDATETIME = SYSDATE `
+      + `WHERE USER_ID = :USER_ID`,
+      [PASSWORD, EMAIL, USERNAME, PHONE_NUMBER, addr, USER_ID],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/order/list', async (req, res) => {
   const { pageSize, offset } = req.query;
   
   try {
     const result = await connection.execute(
-      `SELECT B.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE FROM TBL_BOARD B `
+      `SELECT O.*, TO_CHAR(CDATETIME, 'YYYY-MM-DD') AS CDATE FROM TOOL_ORDERS O `
+      + `ORDER BY CDATETIME DESC `
       + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
     );
     const columnNames = result.metaData.map(column => column.name);
@@ -292,13 +195,52 @@ app.get('/board/list', async (req, res) => {
   }
 });
 
-app.get('/board/add', async (req, res) => {
-  const { kind, title, contents, userId } = req.query;
+app.get('/tools/qna/list', async (req, res) => {
+  const { pageSize, offset } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_QNA `
+      + `ORDER BY CDATETIME DESC `
+      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
 
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/product/insert', async (req, res) => {
+  const { productId, productName, description, price, stock, type } = req.query;
+  
+  
   try {
     await connection.execute(
-      `INSERT INTO TBL_BOARD VALUES(B_SEQ.NEXTVAL, :title, :contents, :userId, 0, 0, :kind, SYSDATE, SYSDATE)`,
-      [title, contents, userId, kind],
+      `INSERT INTO TOOL_PRODUCTS VALUES(:product, :productName, `
+      + `:price, :stock, SYSDATE, SYSDATE, :type, :description)`,
+      [productId, productName, price, stock, type, description],
       { autoCommit: true }
     );
     res.json({
@@ -310,12 +252,48 @@ app.get('/board/add', async (req, res) => {
   }
 });
 
-
-app.get('/board/info', async (req, res) => {
-  const { boardNo } = req.query;
+app.get('/tools/product/list', async (req, res) => {
+  const { pageSize, offset } = req.query;
+  
   try {
     const result = await connection.execute(
-      `SELECT * FROM TBL_BOARD WHERE BOARDNO = '${boardNo}'`
+      `SELECT * FROM TOOL_PRODUCTS `
+      + `ORDER BY UDATETIME DESC `
+      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/product/info', async (req, res) => {
+  const { productId } = req.query;
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_PRODUCTS WHERE PRODUCT_ID = '${productId}'`
     );
     const columnNames = result.metaData.map(column => column.name);
     // 쿼리 결과를 JSON 형태로 변환
@@ -338,11 +316,32 @@ app.get('/board/info', async (req, res) => {
   }
 });
 
-app.get('/tools/login', async (req, res) => {
-  const { userId, userPsd } = req.query;
+app.get('/tools/img/insert', async (req, res) => {
+  const { img, productId } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `INSERT INTO TOOL_IMG VALUES(TOOL_IMG_SEQ.NEXTVAL, 'main', `
+      + `:img , :productId, NULL)`,
+      {img, productId},
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+
+app.get('/tools/product/img/info', async (req, res) => {
+  const { productId } = req.query;
   try {
     const result = await connection.execute(
-      `SELECT * FROM TOOL_USERS WHERE USER_ID = '${userId}' AND PASSWORD = '${userPsd}'`
+      `SELECT * FROM TOOL_IMG WHERE PRODUCT_ID = ${productId}`
     );
     const columnNames = result.metaData.map(column => column.name);
     // 쿼리 결과를 JSON 형태로 변환
@@ -357,7 +356,94 @@ app.get('/tools/login', async (req, res) => {
     // 리턴
     res.json({
         result : "success",
-        info : rows[0]
+        info : rows
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/product/update', async (req, res) => {
+  const { PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION } = req.query;
+  console.log(PRODUCT_ID);
+  console.log(PRODUCT_NAME);
+  console.log(PRICE);
+  console.log(STOCK);
+  console.log(TYPE);
+  console.log(DESCRIPTION);
+  
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_PRODUCTS SET `
+      +`PRODUCT_NAME = :PRODUCT_NAME, PRICE = :PRICE, STOCK = :STOCK, `
+      +`UDATETIME = SYSDATE, TYPE = :TYPE, DESCRIPTION = :DESCRIPTION `
+      +`WHERE PRODUCT_ID = :PRODUCT_ID`,
+      [ PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION, PRODUCT_ID],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/product/img/update', async (req, res) => {
+  const { PRODUCT_ID, img } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_IMG SET `
+      +`IMG_SRC = :img `
+      +`WHERE PRODUCT_ID = :PRODUCT_ID`
+      [ img, PRODUCT_ID ],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/product/type/list', async (req, res) => {
+  const { type } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_PRODUCTS `
+      + `WHERE TYPE LIKE '%${type}%' `
+      + `ORDER BY UDATETIME DESC `
+      
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
     });
   } catch (error) {
     console.error('Error executing query', error);

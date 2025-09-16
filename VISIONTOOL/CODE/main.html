@@ -21,25 +21,23 @@
                 <span class="material-symbols-outlined search iconSmall">search</span>
             </div>
             <div id="WebName">
-                <a href="main.html" class="noDeco">
+                <a @click="fnMain" class="noDeco">
                     <span class="nanum-gothic-regular">비전툴 </span>  
                     <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
                 </a>
             </div>
             <div id="rightBox">
-                <span class="rightBox-Text" v-if="loginFlg == false" @click="fnLogin">로그인 </span>
-                <span v-if="loginFlg==true" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="loginFlg==true" class="rightBox-Text" >마이페이지 </span>
+                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
+                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
+                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
                 <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
             </div>
         </div>
         <div id="category">
-            <span class="tool">드라이버</span>
-            <span class="tool">드라이버</span>
-            <span class="tool">드라이버</span>
-            <span class="tool">드라이버</span>
-            <span class="tool">드라이버</span>
-            <span class="tool">드라이버</span>
+            <span class="tool" @click="fnShowTool('')">전체보기</span>
+            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
+            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
+            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
         </div>
         <div id="container">
             <div id="imgBox">
@@ -115,7 +113,7 @@
                     }
                 });
             },
-            fnLogin(){
+            fnLoginPage(){
                 location.href="login.html";
             },
             fnImg(){
@@ -139,6 +137,36 @@
                 self.userId = "";
                 self.loginFlg = false;
                 location.href="main.html";
+            },
+            fnAdminCheck(){
+                let self = this;
+                let param = {
+                    userId : self.userId
+                }
+                $.ajax({
+                    url: "http://localhost:3009/tools/checkid",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log(data.info.AUTHORITY);
+                        if(data.info.AUTHORITY == "A"){
+                            location.href="admin-main.html";
+                        }
+                    }
+                });
+            },
+            fnMyPage(){
+                let self = this;
+                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            },
+            fnMain(){
+                let self = this;
+                location.href=`main.html?userId=${self.userId}`;
+            },
+            fnShowTool(type){
+                let self = this;
+                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
             }
         }, // methods
         mounted() {
@@ -152,6 +180,7 @@
             } else {
                 self.loginFlg = false;
             }
+            self.fnAdminCheck();
         }
     });
 
