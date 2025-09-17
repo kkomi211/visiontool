@@ -18,8 +18,8 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div id="title">
             <div id="title-Search">
-                <input type="text" class="inputBox">
-                <span class="material-symbols-outlined search iconSmall">search</span>
+                <input type="text" class="inputBox" v-model="search">
+                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
             </div>
             <div id="WebName">
                 <a @click="fnMain" class="noDeco">
@@ -30,7 +30,7 @@
             <div id="rightBox">
                 <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
                 <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
+                <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
             </div>
         </div>
         <div id="left_container">
@@ -85,7 +85,8 @@
                 loginFlg : true,
                 userId : "",
                 userDetailAddr : "",
-                info : {}
+                info : {},
+                search : ""
             };
         },
         methods: {
@@ -185,6 +186,14 @@
             fnMain(){
                 let self = this;
                 location.href=`main.html?userId=${self.userId}`;
+            },
+            fnGoCart(){
+                let self = this;
+                location.href=`cart-list.html?userId=${self.userId}`;
+            },
+            fnSearch(){
+                let self = this;
+                location.href=`toolList.html?userId=${self.userId}&search=${self.search}`
             }
         }, // methods
         mounted() {

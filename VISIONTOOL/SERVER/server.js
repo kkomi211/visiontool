@@ -233,14 +233,14 @@ app.get('/tools/qna/list', async (req, res) => {
 });
 
 app.get('/tools/product/insert', async (req, res) => {
-  const { productId, productName, description, price, stock, type } = req.query;
+  const { productId, productName, description, price, stock, type, img } = req.query;
   
   
   try {
     await connection.execute(
       `INSERT INTO TOOL_PRODUCTS VALUES(:product, :productName, `
-      + `:price, :stock, SYSDATE, SYSDATE, :type, :description)`,
-      [productId, productName, price, stock, type, description],
+      + `:price, :stock, SYSDATE, SYSDATE, :type, :description, :img)`,
+      [productId, productName, price, stock, type, description, img],
       { autoCommit: true }
     );
     res.json({
@@ -258,7 +258,7 @@ app.get('/tools/product/list', async (req, res) => {
   try {
     const result = await connection.execute(
       `SELECT * FROM TOOL_PRODUCTS `
-      + `ORDER BY UDATETIME DESC `
+      + `ORDER BY CDATETIME ASC `
       + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
     );
     const columnNames = result.metaData.map(column => column.name);
@@ -365,7 +365,7 @@ app.get('/tools/product/img/info', async (req, res) => {
 });
 
 app.get('/tools/product/update', async (req, res) => {
-  const { PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION } = req.query;
+  const { PRODUCT_ID, PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION, IMG } = req.query;
   console.log(PRODUCT_ID);
   console.log(PRODUCT_NAME);
   console.log(PRICE);
@@ -378,9 +378,9 @@ app.get('/tools/product/update', async (req, res) => {
     await connection.execute(
       `UPDATE TOOL_PRODUCTS SET `
       +`PRODUCT_NAME = :PRODUCT_NAME, PRICE = :PRICE, STOCK = :STOCK, `
-      +`UDATETIME = SYSDATE, TYPE = :TYPE, DESCRIPTION = :DESCRIPTION `
+      +`UDATETIME = SYSDATE, TYPE = :TYPE, DESCRIPTION = :DESCRIPTION, IMG = :IMG `
       +`WHERE PRODUCT_ID = :PRODUCT_ID`,
-      [ PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION, PRODUCT_ID],
+      [ PRODUCT_NAME, PRICE, STOCK, TYPE, DESCRIPTION, IMG, PRODUCT_ID],
       { autoCommit: true }
     );
     res.json({
@@ -414,12 +414,12 @@ app.get('/tools/product/img/update', async (req, res) => {
 });
 
 app.get('/tools/product/type/list', async (req, res) => {
-  const { type } = req.query;
+  const { type, search } = req.query;
   
   try {
     const result = await connection.execute(
       `SELECT * FROM TOOL_PRODUCTS `
-      + `WHERE TYPE LIKE '%${type}%' `
+      + `WHERE TYPE LIKE '%${type}%' AND PRODUCT_NAME LIKE '%${search}%' `
       + `ORDER BY UDATETIME DESC `
       
     );
@@ -448,6 +448,125 @@ app.get('/tools/product/type/list', async (req, res) => {
   } catch (error) {
     console.error('Error executing query', error);
     res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/cart/insert', async (req, res) => {
+  const { stock, productId, userId } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `INSERT INTO TOOL_CARTS VALUES(TOOL_CART_SEQ.NEXTVAL, :userId, `
+      + `:productId, :stock, SYSDATE)`,
+      {userId, productId, stock},
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/cart/list', async (req, res) => {
+  const { pageSize, offset, userId } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_CARTS `
+      + `WHERE USER_ID = '${userId}'`
+      + `ORDER BY CDATETIME DESC `
+      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/cart/delete', async (req, res) => {
+  const { cartId } = req.query;
+  
+  try {
+    await connection.execute(
+      // `INSERT INTO STUDENT (STU_NO, STU_NAME, STU_DEPT) VALUES (${stuNo}, '${name}', '${dept}')`,
+      `DELETE FROM TOOL_CARTS WHERE CART_ID = :cartId`,
+      [cartId],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/product/stock/update', async (req, res) => {
+  const { productId, stock } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_PRODUCTS SET `
+      +`STOCK = STOCK - :stock, `
+      +`UDATETIME = SYSDATE `
+      +`WHERE PRODUCT_ID = :productId`,
+      [ stock, productId ],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/order/insert', async (req, res) => {
+  const { userId, totalPrice, address, stock, productId } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `INSERT INTO TOOL_ORDERS VALUES(TOOL_ORDER_SEQ.NEXTVAL, :userId, `
+      + `:totalPrice, :address, '배송 준비중', SYSDATE, :stock, :productId)`,
+      [productId, productName, price, stock, type, description, img],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
   }
 });
 

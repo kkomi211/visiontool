@@ -17,13 +17,13 @@
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
         <div id="title">
             <div id="title-Search">
-                <input type="text" class="inputBox" v-model="search">
+                <input type="text" class="inputBox">
                 <span class="material-symbols-outlined search iconSmall">search</span>
             </div>
             <div id="WebName">
                 <a @click="fnMain" class="noDeco">
                     <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold" @click="fnSearch"> VISIONTOOL</span>
+                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
                 </a>
             </div>
             <div id="rightBox">
@@ -39,14 +39,18 @@
             <span class="tool" @click="fnShowTool('수공구')">수공구</span>
             <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
         </div>
-        <div id="flex-container">
-            <div v-for="item in proList">
-                <div class="product-list" @click="fnProductDetail(item.PRODUCT_ID)">
-                    <img :src="item.IMG">
-                    <div>{{item.PRODUCT_NAME}}</div>
-                    <div class="price"> {{item.PRICE}} 원</div>
-                </div>
+        <div id="container">
+            <div class="detail-img"><img :src="info.IMG"></div>
+            <div class=".nanum-gothic-extrabold product-name">{{info.PRODUCT_NAME}}</div>
+            <div class=".nanum-gothic-bold product-detail price">가격 : {{info.PRICE}} 원</div>
+            <div class=".nanum-gothic-bold product-detail">재고 : {{info.STOCK}}개 </div>
+            <div class=".nanum-gothic-bold product-detail2">
+                수량 
+                <button @click="fnStockChange(-1)">-</button>
+                <input type="number" v-model="selectStock">
+                <button @click="fnStockChange(1)">+</button>
             </div>
+            <div class="product-detail"><button @click="fnInputCart">장바구니에 넣기</button></div>
         </div>
         <div class="footer gray">
             <div>
@@ -69,24 +73,28 @@
                 // 변수 - (key : value)
                 loginFlg : false,
                 userId : "",
-                type : "",
-                proList : [],
-                imgList : [],
-                search : ""
+                productId : "",
+                info : {},
+                selectStock : 0
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    productId : self.productId
+                };
                 $.ajax({
-                    url: "http://localhost:3009/",
+                    url: "http://localhost:3009/tools/product/info",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-
+                        console.log(data.info);
+                        self.info = data.info;
+    
+                        
                     }
                 });
             },
@@ -97,52 +105,50 @@
                 let self = this;
                 location.href=`main.html?userId=${self.userId}`;
             },
+            fnLogout(){
+                let self = this;
+                self.userId = "";
+                self.loginFlg = false;
+                location.href="main.html";
+            },
+            fnMyPage(){
+                let self = this;
+                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            },
             fnShowTool(type){
                 let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}&search=${self.search}`;
+                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
             },
-            fnProductList(){
+            fnStockChange(num){
+                let self = this;
+                if(self.selectStock + num < 0 || self.selectStock + num > self.info.STOCK){
+                    return;
+                }
+                self.selectStock += num;
+            },
+            fnInputCart(){
                 let self = this;
                 let param = {
-                    type : self.type,
-                    search : self.search
+                    productId : self.productId,
+                    stock : self.selectStock,
+                    userId : self.userId
                 };
+                if(self.userId == ''){
+                    alert("로그인을 먼저 해주세요!");
+                    return;
+                }
                 $.ajax({
-                    url: "http://localhost:3009/tools/product/type/list",
+                    url: "http://localhost:3009/tools/cart/insert",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        
-                        self.proList = data.boardList;
-                    }
-                });
-            },
-            fnImgInfo(proId){
-                let self = this;
-                console.log("번호 : " + proId);   
-                let imgbox = document.querySelector(`#num${proId}`);
-                let param = {
-                    productId : proId
-                };
-                $.ajax({
-                    url: "http://localhost:3009/tools/product/img/info",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,
-                    success: function (data) {
-                        console.log(data.info);
-                        
-                        self.imgList = data.info;
-                        console.log(self.imgList[0].IMG_SRC);
-                        console.log(imgbox);
+                        alert("장바구니에 들어갔습니다!");
+                        location.href=`product-detail.html?productId=${self.productId}&userId=${self.userId}`
                         
                     }
                 });
-            },
-            fnProductDetail(productId){
-                let self = this;
-                location.href=`product-detail.html?productId=${productId}&userId=${self.userId}`;
+                
             },
             fnGoCart(){
                 let self = this;
@@ -154,9 +160,8 @@
             let self = this;
             const queryParams = new URLSearchParams(window.location.search);
             self.userId = queryParams.get('userId') || '';
-            self.type = queryParams.get('type') || '';
-            self.search = queryParams.get('search') || '';
-            self.fnProductList();
+            self.productId = queryParams.get('productId') || '';
+            self.fnList();
         }
     });
 

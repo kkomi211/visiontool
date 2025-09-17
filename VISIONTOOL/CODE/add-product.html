@@ -135,14 +135,14 @@
                     alert("빈칸이 있습니다!");
                     return;
                 }
-                self.fnImgAdd();
                 let param = {
                     productId : self.productId,
                     productName : self.productName,
                     description : self.description,
                     price : self.price,
                     stock : self.stock,
-                    type : self.type
+                    type : self.type,
+                    img : self.img
                 }
                 $.ajax({
                     url: "http://localhost:3009/tools/product/insert",
@@ -167,23 +167,6 @@
             fnEditProduct(){
                 location.href="edit-product.html";
             },
-            fnImgAdd(){
-                let self = this;
-                let param = {
-                    img : self.img,
-                    productId : self.productId
-                };
-                $.ajax({
-                    url: "http://localhost:3009/tools/img/insert",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,   
-                    success: function (data) {
-                       console.log("이미지 삽입");
-                       
-                    }
-                });
-            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

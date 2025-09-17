@@ -65,11 +65,11 @@
                         </tr>
                         <tr>
                             <th>이미지링크</th>
-                            <td><input type="text" v-model="img"></td>
+                            <td><input type="text" v-model="List.IMG"></td>
                         </tr>
                         <tr>
                             <th>이미지</th>
-                            <td><img src="" id="img"></td>
+                            <td><img :src="List.IMG"></td>
                         </tr>
                         <tr>
                             <th>상세설명</th>
@@ -135,7 +135,7 @@
                     alert("빈칸이 있습니다!");
                     return;
                 }
-                self.fnImgEdit();
+                
                 $.ajax({
                     url: "http://localhost:3009/tools/product/update",
                     dataType: "json",

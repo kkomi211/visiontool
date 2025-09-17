@@ -27,10 +27,7 @@
                 </a>
             </div>
             <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
+                <span class="rightBox-Text" @click="fnLoginPage">로그인 </span>
             </div>
         </div>
         <div id="category">

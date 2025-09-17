@@ -30,7 +30,7 @@
                 <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
                 <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
                 <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
+                <span v-if="userId != ''" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
             </div>
         </div>
         <div id="category">
@@ -90,6 +90,16 @@
             fnShowTool(type){
                 let self = this;
                 location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+            },
+            fnLogout(){
+                let self = this;
+                self.userId = "";
+                self.loginFlg = false;
+                location.href="main.html";
+            },
+            fnGoCart(){
+                let self = this;
+                location.href=`cart-list.html?userId=${self.userId}`;
             }
         }, // methods
         mounted() {

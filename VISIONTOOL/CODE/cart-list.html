@@ -18,12 +18,12 @@
         <div id="title">
             <div id="title-Search">
                 <input type="text" class="inputBox" v-model="search">
-                <span class="material-symbols-outlined search iconSmall">search</span>
+                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
             </div>
             <div id="WebName">
                 <a @click="fnMain" class="noDeco">
                     <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold" @click="fnSearch"> VISIONTOOL</span>
+                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
                 </a>
             </div>
             <div id="rightBox">
@@ -39,12 +39,16 @@
             <span class="tool" @click="fnShowTool('수공구')">수공구</span>
             <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
         </div>
-        <div id="flex-container">
-            <div v-for="item in proList">
-                <div class="product-list" @click="fnProductDetail(item.PRODUCT_ID)">
-                    <img :src="item.IMG">
-                    <div>{{item.PRODUCT_NAME}}</div>
-                    <div class="price"> {{item.PRICE}} 원</div>
+        <div id="container">
+            <div class="nanum-gothic-extrabold detailTitle">장바구니</div>
+            <div v-for="ITEM in list">
+                <div class="cart-box">
+                    <img :src="proList[ITEM.PRODUCT_ID-1].IMG">
+                    <div class="product-detail">{{proList[ITEM.PRODUCT_ID-1].PRODUCT_NAME}}</div>
+                    <div class="product-detail">개수 : {{ITEM.QUANTITY}} 개</div>
+                    <div class="product-detail price">가격 : {{ITEM.QUANTITY * proList[ITEM.PRODUCT_ID-1].PRICE}} 원 </div>
+                    <label><div class="product-detail">구매 <input class="check-cart" type="checkbox"></div></label>
+                    <button @click="fnBuy(ITEM.CART_ID, ITEM.PRODUCT_ID, ITEM.QUANTITY)">구매하기</button>
                 </div>
             </div>
         </div>
@@ -69,24 +73,49 @@
                 // 변수 - (key : value)
                 loginFlg : false,
                 userId : "",
-                type : "",
+                list : [],
                 proList : [],
-                imgList : [],
-                search : ""
+                search : "",
+                type : "",
+                address : ""
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
             fnList: function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    pageSize : 10,
+                    offset : 0,
+                    userId : self.userId
+                };
                 $.ajax({
-                    url: "http://localhost:3009/",
+                    url: "http://localhost:3009/tools/cart/list",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-
+                        console.log(data.boardList);
+                        self.list = data.boardList;
+                    }
+                });
+            },
+            fnProductList(){
+                let self = this;
+                let param = {
+                    pageSize : 10,
+                    offset : 0,
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/product/list",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log("프로덕트");
+                        
+                        console.log(data.boardList);
+                        self.proList = data.boardList;
                     }
                 });
             },
@@ -99,54 +128,91 @@
             },
             fnShowTool(type){
                 let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}&search=${self.search}`;
+                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
             },
-            fnProductList(){
+            fnLogout(){
                 let self = this;
-                let param = {
-                    type : self.type,
-                    search : self.search
-                };
-                $.ajax({
-                    url: "http://localhost:3009/tools/product/type/list",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,
-                    success: function (data) {
-                        
-                        self.proList = data.boardList;
-                    }
-                });
-            },
-            fnImgInfo(proId){
-                let self = this;
-                console.log("번호 : " + proId);   
-                let imgbox = document.querySelector(`#num${proId}`);
-                let param = {
-                    productId : proId
-                };
-                $.ajax({
-                    url: "http://localhost:3009/tools/product/img/info",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,
-                    success: function (data) {
-                        console.log(data.info);
-                        
-                        self.imgList = data.info;
-                        console.log(self.imgList[0].IMG_SRC);
-                        console.log(imgbox);
-                        
-                    }
-                });
-            },
-            fnProductDetail(productId){
-                let self = this;
-                location.href=`product-detail.html?productId=${productId}&userId=${self.userId}`;
+                self.userId = "";
+                self.loginFlg = false;
+                location.href="main.html";
             },
             fnGoCart(){
                 let self = this;
                 location.href=`cart-list.html?userId=${self.userId}`;
+            },
+            fnBuy(itemId, productId, stock){
+                let self = this;
+                let param = {
+                    cartId : itemId
+                }
+                self.fnProductBuy(productId, stock);
+                $.ajax({
+                    url: "http://localhost:3009/tools/cart/delete",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        alert("구매가 완료되었습니다!");
+                        self.fnGoCart();
+                    }
+                });
+                
+            },
+            fnProductBuy(productId, stock){
+                let self = this;
+                let param = {
+                    productId : productId,
+                    stock : stock
+                }
+                $.ajax({
+                    url: "http://localhost:3009/tools/product/stock/update",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log("재고 수정 완료");
+                        self.fninputOrder(productId, stock);
+                    }
+                });
+            },
+            fninputOrder(product, stock){ // 해야댐
+                let self = this;
+                let param = {
+                    productId : productId,
+                    stock : stock,
+                    userId : self.userId,
+                    address : self.address
+                }
+                $.ajax({
+                    url: "http://localhost:3009/tools/order/insert",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log("재고 수정 완료");
+                        self.fninputOrder();
+                    }
+                });
+            },
+            fnSearch(){
+                let self = this;
+                location.href=`toolList.html?userId=${self.userId}&type=${self.type}&search=${self.search}`
+            },
+            fnAddress(){
+                let self = this;
+                let param = {
+                    userId : self.userId
+                }
+                $.ajax({
+                    url: "http://localhost:3009/tools/checkid",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        self.address = data.info.ADDRESS;
+                    }
+                });
             }
         }, // methods
         mounted() {
@@ -154,9 +220,9 @@
             let self = this;
             const queryParams = new URLSearchParams(window.location.search);
             self.userId = queryParams.get('userId') || '';
-            self.type = queryParams.get('type') || '';
-            self.search = queryParams.get('search') || '';
+            self.fnList();
             self.fnProductList();
+            self.fnAddress();
         }
     });
 
