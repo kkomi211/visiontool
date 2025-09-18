@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div id="title">
+            <div id="title-Search">
+                <input type="text" class="inputBox" v-model="search">
+                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+            </div>
+            <div id="WebName">
+                <a @click="fnMain" class="noDeco">
+                    <span class="nanum-gothic-regular">비전툴 </span>
+                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                </a>
+            </div>
+            <div id="rightBox">
+                <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
+                <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
+                <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+            </div>
+        </div>
+        <div id="left_container">
+            <div class="bigLineSpace cursor" @click="fnMyPage">내 정보</div>
+            <div class="bigLineSpace cursor" @click="fnEditInfoPage">내 정보 수정</div>
+            <div class="bigLineSpace cursor" @click="fnOrderList">주문 내역</div>
+            <div class="bigLineSpace cursor" @click="fnQNA">문의 하기</div>
+        </div>
+        <div id="container">
+            <div class="nanum-gothic-extrabold detailTitle">리뷰 쓰기</div>
+
+            <div class="bigLineSpace">
+                <table>
+                    <tr>
+                        <th>상품 번호</th>
+                        <td>{{productId}}</td>
+                    </tr>
+                    <tr>
+                        <th>별점</th>
+                        <td>
+                            <div class="star-rating">
+                                <span v-for="star in 5" :key="star" @click="setRate(star)" @mouseover="hoverRate = star"
+                                    @mouseout="hoverRate = 0" :class="{ 'filled': star <= (hoverRate || rate) }">
+                                    ★
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>내용</th>
+                        <td style="width: 500px; height: 500px;"><textarea class="textarea"
+                                v-model="contents"></textarea></td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <button @click="fnReviewInsert">작성하기</button>
+            <button @click="fnOrderList">돌아가기</button>
+        </div>
+        <div class="footer gray">
+            <div>
+                <span class="material-symbols-outlined iconSmall">call</span>
+                032-515-8024
+            </div>
+            <div>
+                <span class="material-symbols-outlined">location_on</span>
+                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                // 변수 - (key : value)
+                loginFlg: true,
+                userId: "",
+                info: {},
+                search: "",
+                qnaInfo: {},
+                qnaId: "",
+                title: "",
+                contents: "",
+                productId: "",
+                rate: 0,
+                hoverRate: 0
+            };
+        },
+        methods: {
+            // 함수(메소드) - (key : function())
+            fnInfo: function () {
+                let self = this;
+                let param = {
+                    userId: self.userId
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/checkid",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        self.info = data.info;
+                    }
+                });
+            },
+            fnEditInfoPage() {
+                let self = this;
+                location.href = `edit-user.html?userId=${self.userId}`;
+            },
+            fnMyPage() {
+                let self = this;
+                location.href = `mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            },
+            fnOrderList() {
+                let self = this;
+                location.href = `order-list.html?userId=${self.userId}`;
+            },
+            fnQNA() {
+                let self = this;
+                location.href = `user-qna.html?userId=${self.userId}`;
+            },
+            fnLogout() {
+                location.href = "main.html";
+            },
+            fnMain() {
+                let self = this;
+                location.href = `main.html?userId=${self.userId}`;
+            },
+            fnGoCart() {
+                let self = this;
+                location.href = `cart-list.html?userId=${self.userId}`;
+            },
+            fnSearch() {
+                let self = this;
+                location.href = `toolList.html?userId=${self.userId}&search=${self.search}`
+            },
+            fnQNAInfo() {
+                let self = this;
+                let param = {
+                    qnaId: self.qnaId
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/qna/info",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log(data.info);
+                        self.qnaInfo = data.info;
+
+                    }
+                });
+            },
+            fnEditQNA() {
+                let self = this;
+                location.href = "edit-qna.html?userId=" + self.userId;
+            },
+            fnQNADetail(qnaId) {
+                let self = this;
+                location.href = `qna-detail.html?userId=${self.userId}&qnaId=${qnaId}`;
+            },
+            fnReviewInsert() {
+                let self = this;
+                let param = {
+                    contents: self.contents,
+                    productId : self.productId,
+                    userId: self.userId,
+                    rating : self.rate
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/review/insert",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        alert("작성되었습니다");
+                        self.fnOrderList();
+
+                    }
+                });
+            },
+            setRate(star) {
+                // 별을 클릭하면 rate 값을 해당 별의 번호로 업데이트합니다.
+                this.rate = star;
+            }
+        }, // methods
+        mounted() {
+            // 처음 시작할 때 실행되는 부분
+            let self = this;
+            const queryParams = new URLSearchParams(window.location.search);
+            self.userId = queryParams.get('userId') || '';
+            self.productId = queryParams.get('productId') || '';
+            self.fnInfo();
+        }
+    });
+
+    app.mount('#app');
+</script>

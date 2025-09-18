@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상품 수정/삭제 - 관리자 페이지</title>
+    <title>문의 관리 - 관리자 페이지</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -21,10 +21,6 @@
                     <span class="nanum-gothic-extrabold">VISIONTOOL</span>
                     <span class="admin-tag">Admin</span>
                 </a>
-                <nav class="admin-nav">
-                    <a @click="fnAddProduct">상품 등록</a>
-                    <a @click="fnEditProduct" class="active">상품 수정/삭제</a>
-                </nav>
             </div>
             <div class="header-right">
                 <a @click="fnLogout" class="logout-btn">
@@ -36,36 +32,45 @@
 
         <main class="admin-container">
             <div class="admin-page-title">
-                <h1>상품 수정/삭제</h1>
-                <p>수정할 상품의 이름을 클릭하세요.</p>
+                <h1>문의 관리</h1>
+                <p>전체 문의 내역을 확인하고 답변을 등록할 수 있습니다.</p>
             </div>
 
             <div class="admin-widget">
                 <div class="widget-header">
-                    <h3>전체 상품 리스트</h3>
+                    <h3>전체 문의 리스트</h3>
                 </div>
                 <div class="widget-body">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>상품번호</th>
-                                <th>상품 이름</th>
-                                <th>상품 종류</th>
-                                <th>가격</th>
-                                <th>재고</th>
+                                <th>문의번호</th>
+                                <th>문의 제목 (클릭 시 답변)</th>
+                                <th>문의자 ID</th>
+                                <th>작성일</th>
+                                <th>답변현황</th>
                             </tr>
                         </thead>
                         <tbody>
-                             <tr v-if="productList.length === 0"><td colspan="5">등록된 상품이 없습니다.</td></tr>
-                            <tr v-for="item in productList" :key="item.PRODUCT_ID">
-                                <td class="text-center">{{ item.PRODUCT_ID }}</td>
-                                <td><a href="javascript:;" @click="fnProductEdit(item.PRODUCT_ID)" class="table-link">{{ item.PRODUCT_NAME }}</a></td>
-                                <td class="text-center">{{ item.TYPE }}</td>
-                                <td class="text-right">{{ formatPrice(item.PRICE) }}원</td>
-                                <td class="text-right">{{ item.STOCK }}개</td>
+                             <tr v-if="QNAList.length === 0"><td colspan="5">문의 내역이 없습니다.</td></tr>
+                            <tr v-for="item in QNAList" :key="item.QNA_ID">
+                                <td class="text-center">{{ item.QNA_ID }}</td>
+                                <td><a href="javascript:;" @click="fnQNADetail(item.QNA_ID)" class="table-link">{{ item.TITLE }}</a></td>
+                                <td class="text-center">{{ item.USER_ID }}</td>
+                                <td class="text-center">{{ formatDate(item.CDATETIME) }}</td>
+                                <td class="text-center">
+                                    <span :class="['status-tag', getStatusClass(item.STATUS)]">{{ item.STATUS }}</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                 <div class="widget-footer">
+                    <div class="pagination">
+                        <span>&lt;</span>
+                        <span class="active">1</span>
+                        <span>&gt;</span>
+                    </div>
                 </div>
             </div>
         </main>
@@ -76,16 +81,16 @@
     const app = Vue.createApp({
         data() {
             return {
-                productList: [],
+                QNAList: [],
                 offset: 0,
-                pageSize: 10
+                pageSize: 10 // 페이지 당 10개씩 표시
             };
         },
         methods: {
-            fnProductList: function () {
+            fnQNAList: function () {
                 let self = this;
                 $.ajax({
-                    url: "http://localhost:3009/tools/product/list",
+                    url: "http://localhost:3009/tools/qna/admin/list",
                     dataType: "json",
                     type: "GET",
                     data: {
@@ -93,22 +98,27 @@
                         pageSize: self.pageSize
                     },
                     success: function (data) {
-                        self.productList = data.boardList;
+                        self.QNAList = data.boardList;
                     }
                 });
             },
-            formatPrice(value) {
-                return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0';
+            formatDate(datetime) {
+                return datetime ? datetime.split('T')[0] : '';
+            },
+            getStatusClass(status) {
+                return status === '답변완료' ? 'status-completed' : 'status-pending';
+            },
+            fnQNADetail(qnaId) {
+                location.href = `admin-qna-answer.html?qnaId=${qnaId}`;
             },
             fnLogout() { location.href = "main.html"; },
             fnAddProduct() { location.href = "add-product.html"; },
             fnEditProduct() { location.href = "edit-product.html"; },
-            fnProductEdit(productId) {
-                location.href = `go-edit-product.html?productId=${productId}`;
-            }
+            fnOrderShow() { location.href = "admin-order.html"; },
+            fnQNAShow() { location.href = "admin-qna.html"; }
         },
         mounted() {
-            this.fnProductList();
+            this.fnQNAList();
         }
     });
     app.mount('#app');

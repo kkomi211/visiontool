@@ -1,64 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>로그인 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox">
-                <span class="material-symbols-outlined search iconSmall">search</span>
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search"></div>
+                <div id="rightBox"></div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" @click="fnLoginPage">로그인 </span>
-            </div>
-        </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
-        </div>
-        <div id="container">
-            <div class="userBox">
+            <nav id="category"></nav>
+        </header>
+
+        <main id="container" class="login-container">
+            <div class="login-box">
                 <div class="nanum-gothic-extrabold detailTitle">로그인</div>
-                <div class="lineSpace">
-                    아이디 : <input type="text" v-model="userId">
+                <div class="input-group">
+                    <label for="userId">아이디</label>
+                    <input type="text" id="userId" v-model="userId" placeholder="아이디를 입력하세요">
                 </div>
-                <div class="lineSpace">
-                    비밀번호 : <input type="password" v-model="userPsd">
+                <div class="input-group">
+                    <label for="userPsd">비밀번호</label>
+                    <input type="password" id="userPsd" v-model="userPsd" placeholder="비밀번호를 입력하세요" @keyup.enter="fnLogin">
                 </div>
-                <button @click="fnLogin">로그인</button>
-                <button @click="fnJoinPage">회원가입</button>
+                <div class="btn-group">
+                    <button class="btn btn-primary" @click="fnLogin">로그인</button>
+                    <button class="btn btn-secondary" @click="fnJoinPage">회원가입</button>
+                </div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -67,51 +70,50 @@
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : false,
-                userId : "",
-                userPsd : ""
+                userId: "",
+                userPsd: ""
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
+            // 기존 기능 유지
             fnLogin: function () {
                 let self = this;
+                if (!self.userId || !self.userPsd) {
+                    alert("아이디와 비밀번호를 모두 입력해주세요.");
+                    return;
+                }
                 let param = {
-                    userId : self.userId,
-                    userPsd : self.userPsd
+                    userId: self.userId,
+                    userPsd: self.userPsd
                 };
-                console.log(self.userId);
-                
                 $.ajax({
                     url: "http://localhost:3009/tools/login",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data);
-                        if(data.info == null){
-                            alert("아이디/비밀번호가 잘못되었습니다!")
+                        if (data.info == null) {
+                            alert("아이디 또는 비밀번호가 잘못되었습니다.");
                             return;
                         }
-                        location.href="main.html?userId="+data.info.USER_ID;
+                        location.href = `main.html?userId=${data.info.USER_ID}`;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Login failed:", error);
+                        alert("로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
                     }
                 });
             },
-            fnJoinPage(){
-                location.href="join.html";
+            fnJoinPage() {
+                location.href = "join.html";
             },
-            fnLoginPage(){
-                location.href="login.html";
-            },
-            fnShowTool(type){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+            // 헤더의 로고 클릭 시 메인으로 이동하는 기능 추가
+            fnMain() {
+                location.href = "main.html";
             }
-        }, // methods
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
+            // 페이지 로드 시 특별히 실행할 기능이 없으므로 비워둡니다.
         }
     });
 

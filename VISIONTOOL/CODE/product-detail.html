@@ -1,67 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>상품 상세 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox">
-                <span class="material-symbols-outlined search iconSmall">search</span>
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search">
+                    <input type="text" class="inputBox" v-model="search" @keyup.enter="fnSearch" placeholder="검색어를 입력하세요">
+                    <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+                </div>
+                <div id="rightBox">
+                    <span class="rightBox-Text" v-if="!userId" @click="fnLoginPage">로그인</span>
+                    <span v-if="userId" class="rightBox-Text" @click="fnLogout">로그아웃</span>
+                    <span v-if="userId" class="rightBox-Text" @click="fnMyPage">마이페이지</span>
+                    <span v-if="userId" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+                </div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span v-if="userId != ''" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
-            </div>
-        </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
-        </div>
-        <div id="container">
+            <nav id="category">
+                <span class="tool" @click="fnShowTool('')">전체보기</span>
+                <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
+                <span class="tool" @click="fnShowTool('수공구')">수공구</span>
+                <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
+            </nav>
+        </header>
+
+        <main id="container">
             <div class="detail-img"><img :src="info.IMG"></div>
-            <div class=".nanum-gothic-extrabold product-name">{{info.PRODUCT_NAME}}</div>
-            <div class=".nanum-gothic-bold product-detail price">가격 : {{info.PRICE}} 원</div>
-            <div class=".nanum-gothic-bold product-detail">재고 : {{info.STOCK}}개 </div>
-            <div class=".nanum-gothic-bold product-detail2">
+            <div class="nanum-gothic-extrabold product-name">{{info.PRODUCT_NAME}}</div>
+            <div class="nanum-gothic-bold product-detail price">가격 : {{info.PRICE}} 원</div>
+            <div class="nanum-gothic-bold product-detail">재고 : {{info.STOCK}}개 </div>
+            <div class="nanum-gothic-bold product-detail2">
                 수량 
                 <button @click="fnStockChange(-1)">-</button>
-                <input type="number" v-model="selectStock">
+                <input type="number" v-model.number="selectStock">
                 <button @click="fnStockChange(1)">+</button>
             </div>
             <div class="product-detail"><button @click="fnInputCart">장바구니에 넣기</button></div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -70,100 +79,82 @@
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : false,
-                userId : "",
-                productId : "",
-                info : {},
-                selectStock : 0
+                userId: "",
+                productId: "",
+                info: {},
+                selectStock: 1, // 초기 수량을 1로 설정
+                search: "" // search 데이터 추가
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnList() {
                 let self = this;
-                let param = {
-                    productId : self.productId
-                };
+                let param = { productId: self.productId };
                 $.ajax({
                     url: "http://localhost:3009/tools/product/info",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data.info);
                         self.info = data.info;
-    
-                        
+                        if (self.info.STOCK === 0) {
+                           self.selectStock = 0;
+                        }
                     }
                 });
             },
-            fnLoginPage(){
-                location.href="login.html";
-            },
-            fnMain(){
-                let self = this;
-                location.href=`main.html?userId=${self.userId}`;
-            },
-            fnLogout(){
-                let self = this;
-                self.userId = "";
-                self.loginFlg = false;
-                location.href="main.html";
-            },
-            fnMyPage(){
-                let self = this;
-                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
-            },
-            fnShowTool(type){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
-            },
-            fnStockChange(num){
-                let self = this;
-                if(self.selectStock + num < 0 || self.selectStock + num > self.info.STOCK){
+            fnStockChange(num) {
+                const newStock = this.selectStock + num;
+                // 재고가 0일 경우 수량 변경 불가
+                if (this.info.STOCK === 0) return;
+                // 1 미만, 또는 재고 초과 시 변경 불가
+                if (newStock < 1 || newStock > this.info.STOCK) {
                     return;
                 }
-                self.selectStock += num;
+                this.selectStock = newStock;
             },
-            fnInputCart(){
+            fnInputCart() {
                 let self = this;
-                let param = {
-                    productId : self.productId,
-                    stock : self.selectStock,
-                    userId : self.userId
-                };
-                if(self.userId == ''){
+                if (!self.userId) {
                     alert("로그인을 먼저 해주세요!");
+                    location.href = "login.html";
                     return;
                 }
+                if (self.selectStock < 1) {
+                    alert("수량을 1개 이상 선택해주세요.");
+                    return;
+                }
+                let param = {
+                    productId: self.productId,
+                    stock: self.selectStock,
+                    userId: self.userId
+                };
                 $.ajax({
                     url: "http://localhost:3009/tools/cart/insert",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        alert("장바구니에 들어갔습니다!");
-                        location.href=`product-detail.html?productId=${self.productId}&userId=${self.userId}`
-                        
+                        if(confirm("장바구니에 상품을 담았습니다. 장바구니로 이동하시겠습니까?")) {
+                            self.fnGoCart();
+                        }
                     }
                 });
-                
             },
-            fnGoCart(){
-                let self = this;
-                location.href=`cart-list.html?userId=${self.userId}`;
-            }
-        }, // methods
+            fnLoginPage() { location.href = "login.html"; },
+            fnMain() { location.href = `main.html?userId=${this.userId}`; },
+            fnLogout() { location.href = "main.html"; },
+            fnMyPage() { location.href = `mypage.html?userId=${this.userId}`; },
+            fnShowTool(type) { location.href = `toolList.html?userId=${this.userId}&type=${type}`; },
+            fnGoCart() { location.href = `cart-list.html?userId=${this.userId}`; },
+            fnSearch() { location.href = `toolList.html?userId=${this.userId}&search=${this.search}`; }
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
             const queryParams = new URLSearchParams(window.location.search);
-            self.userId = queryParams.get('userId') || '';
-            self.productId = queryParams.get('productId') || '';
-            self.fnList();
+            this.userId = queryParams.get('userId') || '';
+            this.productId = queryParams.get('productId') || '';
+            this.fnList();
         }
     });
-
     app.mount('#app');
 </script>

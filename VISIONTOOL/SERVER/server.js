@@ -195,42 +195,6 @@ app.get('/tools/order/list', async (req, res) => {
   }
 });
 
-app.get('/tools/qna/list', async (req, res) => {
-  const { pageSize, offset } = req.query;
-  
-  try {
-    const result = await connection.execute(
-      `SELECT * FROM TOOL_QNA `
-      + `ORDER BY CDATETIME DESC `
-      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
-    );
-    const columnNames = result.metaData.map(column => column.name);
-    // 쿼리 결과를 JSON 형태로 변환
-    const rows = result.rows.map(row => {
-      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
-      const obj = {};
-      columnNames.forEach((columnName, index) => {
-        obj[columnName] = row[index];
-      });
-      return obj;
-    });
-
-    const count = await connection.execute(
-      `SELECT COUNT(*) FROM TBL_BOARD`
-    );
-    
-    
-    // 리턴
-    res.json({
-        result : "success",
-        boardList : rows,
-        count : count.rows[0][0]
-    });
-  } catch (error) {
-    console.error('Error executing query', error);
-    res.status(500).send('Error executing query');
-  }
-});
 
 app.get('/tools/product/insert', async (req, res) => {
   const { productId, productName, description, price, stock, type, img } = req.query;
@@ -558,7 +522,236 @@ app.get('/tools/order/insert', async (req, res) => {
     await connection.execute(
       `INSERT INTO TOOL_ORDERS VALUES(TOOL_ORDER_SEQ.NEXTVAL, :userId, `
       + `:totalPrice, :address, '배송 준비중', SYSDATE, :stock, :productId)`,
-      [productId, productName, price, stock, type, description, img],
+      [userId, totalPrice, address, stock, productId],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/order/list', async (req, res) => {
+  const { pageSize, offset, userId } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_CARTS `
+      + `WHERE USER_ID = '${userId}'`
+      + `ORDER BY CDATETIME ASC `
+      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/qna/list', async (req, res) => {
+  const { userId } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_QNA `
+      + `WHERE USER_ID = '${userId}'`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/qna/info', async (req, res) => {
+  const { qnaId } = req.query;
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_QNA WHERE QNA_ID = '${qnaId}'`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+    // 리턴
+    res.json({
+        result : "success",
+        info : rows[0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+app.get('/tools/qna/insert', async (req, res) => {
+  const { title, contents, userId } = req.query;
+  console.log(title);
+  console.log(contents);
+  console.log(userId);
+  
+  
+  try {
+    await connection.execute(
+      `INSERT INTO TOOL_QNA VALUES(TOOL_QNA_SEQ.NEXTVAL, NULL, `
+      + `:userId, :title, SYSDATE, NULL, NULL, 'NO', :contents, NULL)`,
+      [userId, title, contents],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/review/insert', async (req, res) => {
+  const { userId, productId, rating, contents } = req.query;
+  console.log(userId);
+  console.log(productId);
+  console.log(rating);
+  console.log(contents);
+  
+  
+  
+  try {
+    await connection.execute(
+      `INSERT INTO TOOL_REVIEWS VALUES(TOOL_REVIEW_SEQ.NEXTVAL, :userId, `
+      + `:productId, :rating, SYSDATE, :contents)`,
+      [userId, productId, rating, contents],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+app.get('/tools/qna/admin/list', async (req, res) => {
+  const { offset, pageSize } = req.query;
+  
+  try {
+    const result = await connection.execute(
+      `SELECT * FROM TOOL_QNA `
+      + `OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`
+    );
+    const columnNames = result.metaData.map(column => column.name);
+    // 쿼리 결과를 JSON 형태로 변환
+    const rows = result.rows.map(row => {
+      // 각 행의 데이터를 컬럼명에 맞게 매핑하여 JSON 객체로 변환
+      const obj = {};
+      columnNames.forEach((columnName, index) => {
+        obj[columnName] = row[index];
+      });
+      return obj;
+    });
+
+    const count = await connection.execute(
+      `SELECT COUNT(*) FROM TBL_BOARD`
+    );
+    
+    
+    // 리턴
+    res.json({
+        result : "success",
+        boardList : rows,
+        count : count.rows[0][0]
+    });
+  } catch (error) {
+    console.error('Error executing query', error);
+    res.status(500).send('Error executing query');
+  }
+});
+
+
+app.get('/tools/product/order/admin/update', async (req, res) => {
+  const { orderId } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_ORDERS SET `
+      +`STATUS = '배송중' `
+      +`WHERE ORDER_ID = :orderId`,
+      [ orderId ],
+      { autoCommit: true }
+    );
+    res.json({
+        result : "success"
+    });
+  } catch (error) {
+    console.error('Error executing insert', error);
+    res.status(500).send('Error executing insert');
+  }
+});
+
+
+app.get('/tools/product/qna/admin/update', async (req, res) => {
+  const { qnaId, ansTitle, answer } = req.query;
+  
+  
+  try {
+    await connection.execute(
+      `UPDATE TOOL_QNA SET `
+      +`ANSWER_TITLE = :ansTitle, ANSWER_DATETIME = SYSDATE, ANSWER = :answer, STATUS = 'YES' `
+      +`WHERE QNA_ID = :qnaId`,
+      [ ansTitle, answer, qnaId ],
       { autoCommit: true }
     );
     res.json({

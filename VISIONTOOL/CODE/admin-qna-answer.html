@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 답변 - 관리자 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div id="app">
+        <header class="admin-header">
+            <div class="header-left">
+                <a href="admin-main.html" class="noDeco admin-logo">
+                    <span class="material-symbols-outlined">build_circle</span>
+                    <span class="nanum-gothic-extrabold">VISIONTOOL</span>
+                    <span class="admin-tag">Admin</span>
+                </a>
+            </div>
+            <div class="header-right">
+                <a @click="fnLogout" class="logout-btn">
+                    <span class="material-symbols-outlined">logout</span>
+                    로그아웃
+                </a>
+            </div>
+        </header>
+
+        <main class="admin-container">
+            <div class="admin-page-title">
+                <h1>문의 답변</h1>
+                <p>문의 내용을 확인하고 답변을 작성합니다.</p>
+            </div>
+
+            <div class="admin-grid-col-1">
+                <div class="admin-widget">
+                    <div class="widget-header">
+                        <h3>문의 내용 (QNA ID: {{ qnaInfo.QNA_ID }})</h3>
+                    </div>
+                    <div class="widget-body qna-view-area">
+                        <h4>{{ qnaInfo.TITLE }}</h4>
+                        <div class="qna-meta-info">
+                            <span><strong>문의자:</strong> {{ qnaInfo.USER_ID }}</span>
+                            <span><strong>작성일:</strong> {{ formatDate(qnaInfo.CDATETIME) }}</span>
+                        </div>
+                        <p class="qna-content-text">{{ qnaInfo.CONTENTS }}</p>
+                    </div>
+                </div>
+
+                <div class="admin-widget">
+                    <div class="widget-header">
+                        <h3>답변 작성</h3>
+                    </div>
+                    <div class="widget-body form-layout-single">
+                         <div class="form-group">
+                            <label for="ansTitle">답변 제목</label>
+                            <input type="text" id="ansTitle" class="admin-input" v-model="ansTitle" placeholder="답변 제목을 입력하세요">
+                        </div>
+                        <div class="form-group">
+                            <label for="answer">답변 내용</label>
+                            <textarea id="answer" class="admin-textarea" rows="10" v-model="answer" placeholder="답변 내용을 입력하세요"></textarea>
+                        </div>
+                         <div class="form-actions">
+                            <button class="btn btn-secondary" @click="fnQNAShow">목록으로</button>
+                            <button class="btn btn-primary btn-lg" @click="fnUpdateQna(qnaInfo.QNA_ID)">답변 등록하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                qnaInfo: {},
+                qnaId: "",
+                ansTitle: "",
+                answer: ""
+            };
+        },
+        methods: {
+            fnQNAInfo() {
+                let self = this;
+                $.ajax({
+                    url: "http://localhost:3009/tools/qna/info",
+                    dataType: "json",
+                    data: { qnaId: self.qnaId },
+                    success: function (data) {
+                        self.qnaInfo = data.info;
+                    }
+                });
+            },
+            fnUpdateQna(qnaId) {
+                let self = this;
+                 if (!self.ansTitle || !self.answer) {
+                    alert("답변 제목과 내용을 모두 입력해주세요.");
+                    return;
+                }
+                let param = {
+                    qnaId: self.qnaId,
+                    ansTitle: self.ansTitle,
+                    answer: self.answer
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/product/qna/admin/update",
+                    dataType: "json",
+                    data: param,
+                    success: function (data) {
+                        alert("답변 등록이 완료되었습니다.");
+                        self.fnQNAShow();
+                    }
+                });
+            },
+            formatDate(datetime) {
+                return datetime ? datetime.split('T')[0] : '';
+            },
+            fnLogout() { location.href = "main.html"; },
+            fnAddProduct() { location.href = "add-product.html"; },
+            fnEditProduct() { location.href = "edit-product.html"; },
+            fnOrderShow() { location.href = "admin-order.html"; },
+            fnQNAShow() { location.href = "admin-qna.html"; }
+        },
+        mounted() {
+            const queryParams = new URLSearchParams(window.location.search);
+            this.qnaId = queryParams.get('qnaId') || '';
+            this.fnQNAInfo();
+        }
+    });
+    app.mount('#app');
+</script>

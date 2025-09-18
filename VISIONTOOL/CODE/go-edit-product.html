@@ -1,180 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>상품 수정 - 관리자 페이지</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="admin-body">
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-admin">
-                <a class="cursor" @click="fnAddProduct">상품 등록</a>
-                <a class="cursor" @click="fnEditProduct">상품 수정</a>
+        <header class="admin-header">
+            <div class="header-left">
+                <a href="admin-main.html" class="noDeco admin-logo">
+                    <span class="material-symbols-outlined">build_circle</span>
+                    <span class="nanum-gothic-extrabold">VISIONTOOL</span>
+                    <span class="admin-tag">Admin</span>
+                </a>
+                <nav class="admin-nav">
+                    <a @click="fnAddProduct">상품 등록</a>
+                    <a @click="fnEditProduct" class="active">상품 수정/삭제</a>
+                </nav>
             </div>
-            <div id="WebName">
-                <a href="admin-main.html" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+            <div class="header-right">
+                <a @click="fnLogout" class="logout-btn">
+                    <span class="material-symbols-outlined">logout</span>
+                    로그아웃
                 </a>
             </div>
-            <div id="admin-rightBox">
-                <span @click="fnLogout" class="cursor">로그아웃 </span>
+        </header>
+
+        <main class="admin-container">
+            <div class="admin-page-title">
+                <h1>상품 수정</h1>
+                <p>상품 ID: {{ productId }}</p>
             </div>
-        </div>
-        <div class="big-search">
-            <input type="text" class="big-input">
-            <span class="material-symbols-outlined iconSmall bold white">search</span>
-        </div>
-        <hr>
-        <div id="admin-container">
-            <div>
-                <div class="nanum-gothic-extrabold detailTitle white"><a class="cursor">상품 수정</a></div>
-                    <table>
-                        <tr>
-                            <th>상품번호</th>
-                            <td><input type="text" v-model="productId" disabled></td>
-                        </tr>
-                        <tr>
-                            <th>상품이름</th>
-                            <td><input type="text" v-model="List.PRODUCT_NAME"></td>
-                        </tr>
-                        <tr>
-                            <th>상품종류</th>
-                            <td>
-                                <label> 전동공구<input v-model="List.TYPE" type="radio" name="tool" value="전동공구"></label>
-                                <label> 수공구  <input v-model="List.TYPE" type="radio" name="tool" value="수공구"></label>
-                                <label> 측량공구<input v-model="List.TYPE" type="radio" name="tool" value="측량공구"></label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>가격</th>
-                            <td><input type="text" v-model="List.PRICE"></td>
-                        </tr>
-                        <tr>
-                            <th>개수</th>
-                            <td><input type="text" v-model="List.STOCK"></td>
-                        </tr>
-                        <tr>
-                            <th>이미지링크</th>
-                            <td><input type="text" v-model="List.IMG"></td>
-                        </tr>
-                        <tr>
-                            <th>이미지</th>
-                            <td><img :src="List.IMG"></td>
-                        </tr>
-                        <tr>
-                            <th>상세설명</th>
-                            <td><textarea class="bigBox" v-model="List.DESCRIPTION"></textarea></td>
-                        </tr>
-                    </table>
-                    <button @click="fnProductEdit">등록하기</button>
+
+            <div class="admin-widget">
+                <div class="widget-header">
+                    <h3>상품 정보 수정</h3>
+                </div>
+                <div class="widget-body form-layout">
+                    <div class="form-group">
+                        <label for="productId">상품번호</label>
+                        <input type="text" id="productId" class="admin-input" v-model="productId" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName">상품이름</label>
+                        <input type="text" id="productName" class="admin-input" v-model="List.PRODUCT_NAME">
+                    </div>
+                    <div class="form-group">
+                        <label>상품종류</label>
+                        <div class="admin-radio-group">
+                            <label><input type="radio" v-model="List.TYPE" name="tool" value="전동공구"> 전동공구</label>
+                            <label><input type="radio" v-model="List.TYPE" name="tool" value="수공구"> 수공구</label>
+                            <label><input type="radio" v-model="List.TYPE" name="tool" value="측량공구"> 측량공구</label>
+                        </div>
+                    </div>
+                    <div class="form-group inline">
+                        <label for="price">가격</label>
+                        <input type="number" id="price" class="admin-input" v-model="List.PRICE">
+                    </div>
+                    <div class="form-group inline">
+                        <label for="stock">재고</label>
+                        <input type="number" id="stock" class="admin-input" v-model="List.STOCK">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="img">이미지 링크</label>
+                        <input type="text" id="img" class="admin-input" v-model="List.IMG">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>이미지 미리보기</label>
+                        <div class="image-preview">
+                            <img v-if="List.IMG" :src="List.IMG" alt="이미지 미리보기">
+                            <span v-else>이미지 링크를 입력하세요.</span>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="description">상세설명</label>
+                        <textarea id="description" class="admin-textarea" rows="8" v-model="List.DESCRIPTION"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" @click="fnEditProduct">목록으로</button>
+                        <button class="btn btn-danger">삭제하기</button>
+                        <button class="btn btn-primary btn-lg" @click="fnProductEdit">수정 완료</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
-            </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </main>
     </div>
 </body>
 </html>
-
 <script>
-    // let type = document.querySelector("#admin-container [name='tool']").value;
-    
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : false,
-                userId : "",
-                productId : "",
-                List : {},
-                img : ""
+                productId: "",
+                List: {},
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
             fnProductEdit() {
                 let self = this;
-                if(self.List.PRODUCT_NAME == ""){
+                if (!self.List.PRODUCT_NAME || !self.List.TYPE || !self.List.PRICE || !self.List.STOCK || !self.List.IMG || !self.List.DESCRIPTION) {
                     alert("빈칸이 있습니다!");
                     return;
                 }
-                if(self.List.TYPE == ""){
-                    alert("빈칸이 있습니다!");
-                    return;
-                }
-                if(self.List.PRICE == ""){
-                    alert("빈칸이 있습니다!");
-                    return;
-                }
-                if(self.List.STOCK == ""){
-                    alert("빈칸이 있습니다!");
-                    return;
-                }
-                if(self.img == ""){
-                    alert("빈칸이 있습니다!");
-                    return;
-                }
-                if(self.List.DESCRIPTION == ""){
-                    alert("빈칸이 있습니다!");
-                    return;
-                }
-                
                 $.ajax({
                     url: "http://localhost:3009/tools/product/update",
                     dataType: "json",
                     type: "GET",
-                    data: self.List,   
+                    data: self.List,
                     success: function (data) {
                         alert("수정이 완료되었습니다!");
                         self.fnEditProduct();
                     }
                 });
-            },
-            fnImgEdit(){
-                let self = this;
-                let param = {
-                    PRODUCT_ID : self.productId,
-                    img : self.img
-                }
-                $.ajax({
-                    url: "http://localhost:3009/tools/product/update",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,   
-                    success: function (data) {
-                        console.log("이미지 수정");
-                        
-                    }
-                });
-            },
-            fnLoginPage(){
-                location.href="login.html";
-            },
-            fnLogout(){
-                location.href="main.html";
-            },
-            fnAddProduct(){
-                location.href="add-product.html";
-            },
-            fnEditProduct(){
-                location.href="edit-product.html";
             },
             fnProductInfo: function () {
                 let self = this;
@@ -183,43 +129,22 @@
                     dataType: "json",
                     type: "GET",
                     data: {
-                        productId : self.productId
-                    },   
+                        productId: self.productId
+                    },
                     success: function (data) {
-                        
                         self.List = data.info;
-                        console.log(self.List);
-
                     }
                 });
             },
-            fnProductImginfo(){
-                let self = this;
-                let showImg = document.querySelector("#img");
-                $.ajax({
-                    url: "http://localhost:3009/tools/product/img/info",
-                    dataType: "json",
-                    type: "GET",
-                    data: {
-                        productId : self.productId
-                    },   
-                    success: function (data) {
-                        console.log(data.info);
-                        self.img = data.info.IMG_SRC;
-                        showImg.src = data.info.IMG_SRC;
-                    }
-                });
-            }
-        }, // methods
+            fnLogout() { location.href = "main.html"; },
+            fnAddProduct() { location.href = "add-product.html"; },
+            fnEditProduct() { location.href = "edit-product.html"; }
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
             const queryParams = new URLSearchParams(window.location.search);
-            self.productId = queryParams.get('productId') || '';
-            self.fnProductInfo();
-            self.fnProductImginfo();
+            this.productId = queryParams.get('productId') || '';
+            this.fnProductInfo();
         }
     });
-
     app.mount('#app');
 </script>

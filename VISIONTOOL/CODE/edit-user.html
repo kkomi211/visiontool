@@ -1,147 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>내 정보 수정 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox" v-model="search">
-                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
-            </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
-            </div>
-        </div>
-        <div id="left_container">
-            <div class="bigLineSpace cursor" @click="fnMyPage">내 정보</div>
-            <div class="bigLineSpace cursor" @click="fnEditInfoPage">내 정보 수정</div>
-            <div class="bigLineSpace cursor" @click="fnOrderList">주문 내역</div>
-            <div class="bigLineSpace cursor" @click="fnQNA">문의 하기</div>
-        </div>
-        <div id="container">
-            <div class="nanum-gothic-extrabold detailTitle">내 정보 수정</div>
-            <div class="userBox">
-                <div class="lineSpace">
-                    비밀번호 : <input type="password" v-model="info.PASSWORD">
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
                 </div>
-                <div class="lineSpace">
-                    이메일 : <input type="text" v-model="info.EMAIL">
+                <div id="title-Search">
+                    <input type="text" class="inputBox" v-model="search" @keyup.enter="fnSearch" placeholder="검색어를 입력하세요">
+                    <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
                 </div>
-                <div class="lineSpace">
-                    닉네임 : <input type="text" v-model="info.USERNAME">
+                <div id="rightBox">
+                    <span class="rightBox-Text" @click="fnLogout">로그아웃</span>
+                    <span class="rightBox-Text" @click="fnMyPage">마이페이지</span>
+                    <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
                 </div>
-                <div class="lineSpace">
-                    전화번호 : <input type="text" v-model="info.PHONE_NUMBER">
-                </div>
-                <div class="lineSpace">
-                    주소 : 
-                    <input type="text" v-model="info.ADDRESS" placeholder="도로명주소">
-                    <input type="text" v-model="userDetailAddr" placeholder="상세주소"><br>
-                    <input type="button" @click="execDaumPostcode()" value="주소찾기">
-                </div>
-                <div style="text-align: right;"><button @click="fnEditInfo">정보 수정하기</button></div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+        </header>
+
+        <main id="container">
+            <div class="mypage-layout">
+                <nav class="mypage-sidebar">
+                    <ul>
+                        <li><a href="#" @click.prevent="fnMyPage">내 정보</a></li>
+                        <li><a href="#" @click.prevent="fnEditInfoPage" class="active">내 정보 수정</a></li>
+                        <li><a href="#" @click.prevent="fnOrderList">주문 내역</a></li>
+                        <li><a href="#" @click.prevent="fnQNA">문의하기</a></li>
+                    </ul>
+                </nav>
+
+                <div class="mypage-content">
+                    <div class="nanum-gothic-extrabold detailTitle">내 정보 수정</div>
+                    <div class="edit-form-box">
+                        <div class="input-group">
+                            <label>비밀번호</label>
+                            <input type="password" v-model="info.PASSWORD" placeholder="새 비밀번호를 입력하세요">
+                        </div>
+                         <div class="input-group">
+                            <label>닉네임</label>
+                            <input type="text" v-model="info.USERNAME" placeholder="닉네임을 입력하세요">
+                        </div>
+                        <div class="input-group">
+                            <label>이메일</label>
+                            <input type="text" v-model="info.EMAIL" placeholder="example@email.com">
+                        </div>
+                        <div class="input-group">
+                            <label>전화번호</label>
+                            <input type="text" v-model="info.PHONE_NUMBER" placeholder="'-' 없이 숫자만 입력">
+                        </div>
+                        <div class="input-group">
+                            <label>주소</label>
+                            <div class="input-with-button">
+                                <input type="text" v-model="info.ADDRESS" placeholder="도로명주소" readonly>
+                                <button class="btn btn-secondary" @click="execDaumPostcode">주소찾기</button>
+                            </div>
+                            <input type="text" v-model="userDetailAddr" placeholder="상세주소를 입력하세요" class="mt-10">
+                        </div>
+                        <div class="info-actions">
+                            <button class="btn btn-primary" @click="fnEditInfo">수정 완료</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
-
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : true,
-                userId : "",
-                userDetailAddr : "",
-                info : {},
-                search : ""
+                userId: "",
+                userDetailAddr: "",
+                info: {},
+                search: ""
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
-            fnInfo: function () {
+            fnInfo() {
                 let self = this;
-                let param = {
-                    userId : self.userId
-                };
                 $.ajax({
-                    url: "http://localhost:3009/tools/checkid",
+                    url: `http://localhost:3009/tools/checkid?userId=${self.userId}`,
                     dataType: "json",
                     type: "GET",
-                    data: param,
                     success: function (data) {
                         self.info = data.info;
+                        // 상세주소 분리 (예시: "도로명주소 (상세주소)")
+                        const addressParts = self.info.ADDRESS.split(' (');
+                        if (addressParts.length > 1) {
+                            self.info.ADDRESS = addressParts[0];
+                            self.userDetailAddr = addressParts[1].replace(')', '');
+                        }
                     }
                 });
             },
-            fnEditInfoPage(){
+            fnEditInfo() {
                 let self = this;
-                location.href=`edit-user.html?userId=${self.userId}`;
-            },
-            fnMyPage(){
-                let self = this;
-                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
-            },
-            fnOrderList(){
-                let self = this;
-                location.href=`order-list.html?userId=${self.userId}`;
-            },
-            fnQNA(){
-                let self = this;
-                location.href=`user-qna.html?userId=${self.userId}`;
-            },
-            fnLogout(){
-                location.href="main.html";
-            },
-            fnEditInfo(){
-                let self = this;
-                let INFO = self.info;
-                
-                
-                let param = {   
-                    PASSWORD : INFO.PASSWORD,
-                    EMAIL : INFO.EMAIL,
-                    USERNAME : INFO.USERNAME,
-                    PHONE_NUMBER : INFO.PHONE_NUMBER,
-                    ADDRESS : INFO.ADDRESS,
-                    USER_ID : INFO.USER_ID,
-                    userDetailAddr : self.userDetailAddr
-                }
-                console.log(param);
-                
-                    
+                let fullAddress = self.info.ADDRESS + (self.userDetailAddr ? ` (${self.userDetailAddr})` : '');
+                let param = {
+                    PASSWORD: self.info.PASSWORD,
+                    EMAIL: self.info.EMAIL,
+                    USERNAME: self.info.USERNAME,
+                    PHONE_NUMBER: self.info.PHONE_NUMBER,
+                    ADDRESS: fullAddress,
+                    USER_ID: self.info.USER_ID
+                };
                 $.ajax({
                     url: "http://localhost:3009/tools/user/update",
                     dataType: "json",
@@ -157,54 +154,29 @@
                 let self = this;
                 new daum.Postcode({
                     oncomplete: function(data) {
-                        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
-                        // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
-                        // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                        var roadAddr = data.roadAddress; // 도로명 주소 변수
-                        var extraRoadAddr = ''; // 참고 항목 변수
-
-                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                            extraRoadAddr += data.bname;
-                        }
-                        // 건물명이 있고, 공동주택일 경우 추가한다.
-                        if(data.buildingName !== '' && data.apartment === 'Y'){
-                        extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                        }
-                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                        if(extraRoadAddr !== ''){
-                            extraRoadAddr = ' (' + extraRoadAddr + ')';
-                        }
-
-                        // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                        self.info.ADDRESS = roadAddr;
+                        self.info.ADDRESS = data.roadAddress;
                     }
-                }).open()
+                }).open();
             },
-            fnMain(){
-                let self = this;
-                location.href=`main.html?userId=${self.userId}`;
-            },
-            fnGoCart(){
-                let self = this;
-                location.href=`cart-list.html?userId=${self.userId}`;
-            },
-            fnSearch(){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&search=${self.search}`
-            }
-        }, // methods
+            fnEditInfoPage() { location.href = `edit-user.html?userId=${this.userId}`; },
+            fnMyPage() { location.href = `mypage.html?userId=${this.userId}`; },
+            fnOrderList() { location.href = `order-list.html?userId=${this.userId}`; },
+            fnQNA() { location.href = `user-qna.html?userId=${this.userId}`; },
+            fnLogout() { location.href = "main.html"; },
+            fnMain() { location.href = `main.html?userId=${this.userId}`; },
+            fnGoCart() { location.href = `cart-list.html?userId=${this.userId}`; },
+            fnSearch() { location.href = `toolList.html?userId=${this.userId}&search=${this.search}`; }
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
             const queryParams = new URLSearchParams(window.location.search);
-            self.userId = queryParams.get('userId') || '';
-            self.loginFlg = queryParams.get('loginFlg') || false;
-            self.fnInfo();            
+            this.userId = queryParams.get('userId') || '';
+            if (!this.userId) {
+                alert('로그인이 필요한 서비스입니다.');
+                location.href = 'login.html';
+                return;
+            }
+            this.fnInfo();
         }
     });
-
     app.mount('#app');
 </script>

@@ -1,156 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>관리자 페이지 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="admin-body">
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-admin">
-                <a class="cursor" @click="fnAddProduct">상품 등록</a>
-                <a class="cursor" @click="fnEditProduct">상품 수정</a>
+        <header class="admin-header">
+            <div class="header-left">
+                <a href="admin-main.html" class="noDeco admin-logo">
+                    <span class="material-symbols-outlined">build_circle</span>
+                    <span class="nanum-gothic-extrabold">VISIONTOOL</span>
+                    <span class="admin-tag">Admin</span>
+                </a>
+                <nav class="admin-nav">
+                    <a @click="fnAddProduct">상품 등록</a>
+                    <a @click="fnEditProduct">상품 수정/삭제</a>
+                </nav>
             </div>
-            <div id="WebName">
-                <a href="admin-main.html" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+            <div class="header-right">
+                <a @click="fnLogout" class="logout-btn">
+                    <span class="material-symbols-outlined">logout</span>
+                    로그아웃
                 </a>
             </div>
-            <div id="admin-rightBox">
-                <span @click="fnLogout" class="cursor">로그아웃 </span>
+        </header>
+
+        <main class="admin-container">
+            <div class="admin-page-title">
+                <p>최근 주문 및 문의 내역을 확인하세요.</p>
             </div>
-        </div>
-        <div class="big-search">
-            <input type="text" class="big-input">
-            <span class="material-symbols-outlined iconSmall bold white">search</span>
-        </div>
-        <hr>
-        <div id="admin-container">
-            <div>
-                <div class="nanum-gothic-extrabold detailTitle white"><a class="cursor">주문 리스트</a></div>
-                    <table>
-                        <tr>
-                            <th>주문 번호</th>
-                            <th>구매자 아이디</th>
-                            <th>구매자 주소</th>
-                            <th>주문 현황</th>
-                        </tr>
-                        <tr v-for="item in orderList">
-                            <td>{{item.ORDER_ID}}</td>
-                            <td>{{item.USER_ID}}</td>
-                            <td>{{item.ADDRESS}}</td>
-                            <td>{{item.STATUS}}</td>
-                        </tr>
-                    </table>
-                <div class="nanum-gothic-extrabold detailTitle white"><a class="cursor">문의 리스트</a></div>   
-                    <table>
-                        <tr>
-                            <th>문의 번호</th>
-                            <th>문의 제목</th>
-                            <th>문의자 아이디</th>
-                            <th>문의 대답 현황</th>
-                        </tr>
-                        <tr v-for="item2 in QNAList">
-                            <td>{{item2.QNA_ID}}</td>
-                            <td>{{item2.TITLE}}</td>
-                            <td>{{item2.USER_ID}}</td>
-                            <td>{{item2.STATUS}}</td>
-                        </tr>
-                    </table>
+            
+            <div class="admin-grid">
+                <div class="admin-widget">
+                    <div class="widget-header">
+                        <h3>최근 주문 리스트</h3>
+                        <a @click="fnOrderShow" class="view-more">더보기 &gt;</a>
+                    </div>
+                    <div class="widget-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>주문번호</th>
+                                    <th>구매자 ID</th>
+                                    <th>주문현황</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="orderList.length === 0"><td colspan="3">최근 주문이 없습니다.</td></tr>
+                                <tr v-for="item in orderList" :key="item.ORDER_ID">
+                                    <td>{{ item.ORDER_ID }}</td>
+                                    <td>{{ item.USER_ID }}</td>
+                                    <td><span :class="['status-tag', getStatusClass(item.STATUS)]">{{ item.STATUS }}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-widget">
+                    <div class="widget-header">
+                        <h3>문의 리스트</h3>
+                        <a @click="fnQNAShow" class="view-more">더보기 &gt;</a>
+                    </div>
+                    <div class="widget-body">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>문의번호</th>
+                                    <th>문의 제목</th>
+                                    <th>문의자 ID</th>
+                                    <th>답변 여부</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-if="QNAList.length === 0"><td colspan="3">미답변 문의가 없습니다.</td></tr>
+                                <tr v-for="item2 in QNAList" :key="item2.QNA_ID">
+                                    <td>{{ item2.QNA_ID }}</td>
+                                    <td class="table-title">{{ item2.TITLE }}</td>
+                                    <td>{{ item2.USER_ID }}</td>
+                                    <td>{{ item2.STATUS }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
-            </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </main>
     </div>
 </body>
 </html>
-
 <script>
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : false,
-                userId : "",
-                orderList : [],
-                QNAList : [],
-                offset : 0,
-                pageSize : 5
+                orderList: [],
+                QNAList: [],
+                offset: 0,
+                pageSize: 5 // 메인에서는 최근 5개만 표시
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
-            fnOrderList: function () {
-                let self = this;
+            fnOrderList() {
                 $.ajax({
                     url: "http://localhost:3009/tools/order/list",
                     dataType: "json",
-                    type: "GET",
-                    data: {
-                        offset : self.offset,
-                        pageSize : self.pageSize
-                    },   
-                    success: function (data) {
-                        console.log(data.boardList[0]);
-                        self.orderList = data.boardList;
-                    }
+                    data: { offset: this.offset, pageSize: this.pageSize },
+                    success: (data) => { this.orderList = data.boardList; }
                 });
             },
-            fnQNAList: function () {
-                let self = this;
+            fnQNAList() {
                 $.ajax({
-                    url: "http://localhost:3009/tools/qna/list",
+                    url: "http://localhost:3009/tools/qna/admin/list",
                     dataType: "json",
-                    type: "GET",
-                    data: {
-                        offset : self.offset,
-                        pageSize : self.pageSize
-                    },   
-                    success: function (data) {
-                        console.log(data);
-                        
-                        self.QNAList = data.boardList;
-                    }
+                    data: { offset: this.offset, pageSize: this.pageSize, status: '답변대기' }, // 답변대기 상태만 가져오기
+                    success: (data) => { this.QNAList = data.boardList; }
                 });
             },
-            fnLoginPage(){
-                location.href="login.html";
+            getStatusClass(status) {
+                if (status === '배송완료') return 'status-completed';
+                if (status === '배송중') return 'status-shipping';
+                return 'status-pending';
             },
-            fnLogout(){
-                location.href="main.html";
-            },
-            fnAddProduct(){
-                location.href="add-product.html";
-            },
-            fnEditProduct(){
-                location.href="edit-product.html";
-            }
-        }, // methods
+            fnLogout() { location.href = "main.html"; },
+            fnAddProduct() { location.href = "add-product.html"; },
+            fnEditProduct() { location.href = "edit-product.html"; },
+            fnQNAShow() { location.href = "admin-qna.html"; },
+            fnOrderShow() { location.href = "admin-order.html"; }
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
-            self.fnOrderList();
-            self.fnQNAList();
+            this.fnOrderList();
+            this.fnQNAList();
         }
     });
-
     app.mount('#app');
 </script>

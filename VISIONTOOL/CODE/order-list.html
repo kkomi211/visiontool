@@ -1,66 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>주문 내역 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox" v-model="search">
-                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+        <header id="header">
+             <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search">
+                    <input type="text" class="inputBox" v-model="search" @keyup.enter="fnSearch" placeholder="검색어를 입력하세요">
+                    <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+                </div>
+                <div id="rightBox">
+                    <span class="rightBox-Text" @click="fnLogout">로그아웃</span>
+                    <span class="rightBox-Text" @click="fnMyPage">마이페이지</span>
+                    <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+                </div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
+        </header>
+
+        <main id="container">
+            <div class="mypage-layout">
+                <nav class="mypage-sidebar">
+                    <ul>
+                        <li><a href="#" @click.prevent="fnMyPage">내 정보</a></li>
+                        <li><a href="#" @click.prevent="fnEditInfoPage">내 정보 수정</a></li>
+                        <li><a href="#" @click.prevent="fnOrderList" class="active">주문 내역</a></li>
+                        <li><a href="#" @click.prevent="fnQNA">문의하기</a></li>
+                    </ul>
+                </nav>
+
+                <div class="mypage-content">
+                    <div class="content-header">
+                        <h2 class="detailTitle nanum-gothic-extrabold">주문 내역</h2>
+                    </div>
+                    
+                    <div class="order-list-container-final">
+                         <div v-if="list.length === 0" class="no-results-box">
+                            주문 내역이 없습니다.
+                        </div>
+                        <div v-for="item in list" :key="item.ORDER_ID" class="order-card-final">
+                            <div class="order-card-header-final" v-if="proList[item.PRODUCT_ID-1]">
+                                <div class="order-info">
+                                    <span class="label">주문 날짜:</span>
+                                    <span class="value">{{ formatDate(item.CDATETIME) }}</span>
+                                </div>
+                                <div class="order-info">
+                                    <span class="label">주문번호:</span>
+                                    <span class="value">{{ item.ORDER_ID }}</span>
+                                </div>
+                            </div>
+                            <div class="order-card-body-final" v-if="proList[item.PRODUCT_ID-1]">
+                                <img :src="proList[item.PRODUCT_ID-1].IMG" class="product-image">
+                                <div class="product-details">
+                                    <p class="product-name">{{ proList[item.PRODUCT_ID-1].PRODUCT_NAME }}</p>
+                                    <p class="product-quantity">수량: {{ item.STOCK }}개</p>
+                                    <p class="product-total-price">{{ formatPrice(item.TOTAL_PRICE) }}원</p>
+                                </div>
+                                <div class="order-status">
+                                    <span :class="['status-tag', getStatusClass(item.STATUS)]">{{ item.STATUS }}</span>
+                                    <button v-if="item.STATUS === '배송완료'" class="btn btn-secondary btn-sm" @click="fnReview(item.PRODUCT_ID)">리뷰 작성</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+        </main>
+
+        <footer class="footer">
+             <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-        </div>
-        <div id="left_container">
-            <div class="bigLineSpace cursor" @click="fnMyPage">내 정보</div>
-            <div class="bigLineSpace cursor" @click="fnEditInfoPage">내 정보 수정</div>
-            <div class="bigLineSpace cursor" @click="fnOrderList">주문 내역</div>
-            <div class="bigLineSpace cursor" @click="fnQNA">문의 하기</div>
-        </div>
-        <div id="container">
-            <div class="nanum-gothic-extrabold detailTitle">주문 내역</div>
-            <div class="USERBox">
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">아이디 :</span> {{info.USER_ID}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">닉네임 :</span> {{info.USERNAME}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">이메일 :</span> {{info.EMAIL}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">주 소 :</span> {{info.ADDRESS}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">휴대폰 :</span> {{info.PHONE_NUMBER}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">가입일 :</span> {{info.CDATETIME}}</div>
-                <div class="lineSpace nanum-gothic-regular"><span class="bold">최근 정보 수정일 :</span> {{info.UDATETIME}}</div>
-                <div style="text-align: right;"><button @click="fnEditInfoPage">정보 수정하기</button></div>
-            </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
-            </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -73,10 +111,28 @@
                 loginFlg : true,
                 userId : "",
                 info : {},
-                search : ""
+                search : "",
+                list : [],
+                pageSize : 10,
+                offset : 0,
+                proList : []
             };
         },
         methods: {
+            // 날짜 포맷팅 함수 (YYYY-MM-DD 형식)
+            formatDate(datetime) {
+                return datetime ? datetime.split('T')[0] : '';
+            },
+            // 가격 포맷팅 함수 (세 자리 콤마)
+            formatPrice(value) {
+                return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0';
+            },
+            // 배송 상태에 따라 다른 CSS 클래스 반환
+            getStatusClass(status) {
+                if (status === '배송완료') return 'status-completed';
+                if (status === '배송중') return 'status-shipping';
+                return 'status-pending'; // '결제대기' 등
+            },
             // 함수(메소드) - (key : function())
             fnInfo: function () {
                 let self = this;
@@ -123,6 +179,48 @@
             fnSearch(){
                 let self = this;
                 location.href=`toolList.html?userId=${self.userId}&search=${self.search}`
+            },
+            fnShowOrder(){
+                let self = this;
+                let param = {
+                    pageSize : self.pageSize,
+                    offset : self.offset,
+                    userId : self.userId
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/order/list",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        self.list = data.boardList;
+                    }
+                });
+            },
+            fnProList(){
+                let self = this;
+                let param = {
+                    pageSize : self.pageSize,
+                    offset : self.offset
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/product/list",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        console.log("ddddd");
+                        
+                        console.log(data.boardList);
+                        self.proList = data.boardList;
+                        
+                    }
+                });
+            },
+            fnReview(productId){
+                let self=this;
+                location.href = `review.html?userId=${self.userId}&productId=${productId}`
             }
         }, // methods
         mounted() {
@@ -131,7 +229,9 @@
             const queryParams = new URLSearchParams(window.location.search);
             self.userId = queryParams.get('userId') || '';
             self.loginFlg = queryParams.get('loginFlg') || false;
-            self.fnInfo();            
+            self.fnInfo();  
+            self.fnShowOrder();
+            self.fnProList();         
         }
     });
 

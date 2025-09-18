@@ -1,89 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>비전툴 - 당신의 비전을 현실로</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox" v-model="search">
-                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search">
+                    <input type="text" class="inputBox" v-model="search" placeholder="무엇을 찾고 계신가요?">
+                    <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+                </div>
+                <div id="rightBox">
+                    <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인</span>
+                    <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃</span>
+                    <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지</span>
+                    <span v-if="userId != ''" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+                </div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span v-if="userId != ''" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
-            </div>
-        </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
-        </div>
-        <div id="container">
-            <div id="imgBox">
-                <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_15%2F153330168916230X2A_JPEG%2F8ekASE-1M1-1pcEt9a7d9uRm.jpg&type=sc960_832" class="bigImg" id="img1">
-                <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_227%2F153330168940759Kaa_JPEG%2F5GMpcxeZwJEWCF-zmiH2Tu_z.jpg&type=sc960_832" class="img" id="img2">
-                <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_278%2F1533301688841gGJIk_JPEG%2FABKijojmD7TsTEymih8gDsQ-.jpg&type=sc960_832" class="img" id="img3">
-                <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_232%2F1533301688940Q8GYW_JPEG%2FM0Vicr9S9v4oKJYdvUZfMD43.jpg&type=sc960_832" class="img" id="img4">
-            </div>
-            <div class="contents">
-                <div class="nanum-gothic-extrabold detailTitle">회사 소개</div>
-                <div class="nanum-gothic-regular">
-                    <div>당신의 비전을 현실로 만드는 최상의 도구, 비전툴입니다.</div>
-                    <div>
-                        청계천에서 공구 도매업 20년 경력을 바탕으로 인천 부평구 산곡동에 
-                        대형 기계공구.산업용재 유통전문 업체인 비젼툴이 문을 열었습니다. 
-                    </div><div>
-                        작은 철물에서부터 전동, 에어, 용접, 산업안전공구 등 
-                        산업용재 전반을 고루 갖춘 대형 공구 마켓입니다.
-                    </div><div>
-                        한 번의 인연도 소중히 여기는 마음자세로 어려운 시기를 함께 하며 
-                        합리적 가격과 좋은 품질, 다양한 제품 공급을 통해 고객들의 편의와 
-                        시너지를 발휘할 수 있는 윈윈하는 기업이 되겠습니다.
+            <nav id="category">
+                <span class="tool" @click="fnShowTool('')">전체보기</span>
+                <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
+                <span class="tool" @click="fnShowTool('수공구')">수공구</span>
+                <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
+            </nav>
+        </header>
+
+        <main id="container">
+            <div class="main-content">
+                <div id="imgBox">
+                    <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_15%2F153330168916230X2A_JPEG%2F8ekASE-1M1-1pcEt9a7d9uRm.jpg&type=sc960_832" class="bigImg" id="img1">
+                    <div class="thumbnails">
+                        <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_227%2F153330168940759Kaa_JPEG%2F5GMpcxeZwJEWCF-zmiH2Tu_z.jpg&type=sc960_832" class="img" id="img2">
+                        <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_278%2F1533301688841gGJIk_JPEG%2FABKijojmD7TsTEymih8gDsQ-.jpg&type=sc960_832" class="img" id="img3">
+                        <img src="https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20180803_232%2F1533301688940Q8GYW_JPEG%2FM0Vicr9S9v4oKJYdvUZfMD43.jpg&type=sc960_832" class="img" id="img4">
                     </div>
                 </div>
+                <div class="contents">
+                    <div class="content-box">
+                        <div class="nanum-gothic-extrabold detailTitle">회사 소개</div>
+                        <div class="nanum-gothic-regular">
+                            <div>당신의 비전을 현실로 만드는 최상의 도구, 비전툴입니다.</div>
+                            <div>
+                                청계천에서 공구 도매업 20년 경력을 바탕으로 인천 부평구 산곡동에
+                                대형 기계공구·산업용재 유통전문 업체인 비전툴이 문을 열었습니다.
+                            </div><div>
+                                작은 철물에서부터 전동, 에어, 용접, 산업안전공구 등
+                                산업용재 전반을 고루 갖춘 대형 공구 마켓입니다.
+                            </div><div>
+                                한 번의 인연도 소중히 여기는 마음자세로 어려운 시기를 함께 하며
+                                합리적 가격과 좋은 품질, 다양한 제품 공급을 통해 고객들의 편의와
+                                시너지를 발휘할 수 있는, 함께 성장하는 기업이 되겠습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="content-box promise-box">
                 <div class="nanum-gothic-bold detailTitle">비전툴의 약속</div>
                 <div class="nanum-gothic-regular">
-                    <div class=lineSpace><a class="bold">엄선된 품질</a>: 수많은 전문가의 테스트를 거친 내구성 강하고 성능이 뛰어난 제품만을 선보입니다.</div>
-                    <div class=lineSpace><a class="bold">전문적인 지식</a>: 어떤 작업에 어떤 공구가 필요한지, 고객님의 궁금증을 명쾌하게 해결해 드립니다.</div>
-                    <div class=lineSpace><a class="bold">신뢰할 수 있는 파트너</a>: 한번의 판매로 끝나지 않고, 지속적인 지원과 서비스로 고객님의 곁을 지키겠습니다.</div>
-                    <div class=lineSpace>당신의 손에서 시작되는 위대한 창조의 여정, 비전툴이 가장 든든한 힘이 되어드리겠습니다.</div>
-                </div>
-                <div>
-                    <img src="https://i.postimg.cc/NLvr0qGt/image.png" class="companyMap">
+                    <div class="lineSpace"><span class="bold">엄선된 품질</span>: 수많은 전문가의 테스트를 거친, 내구성이 강하고 성능이 뛰어난 제품만을 선보입니다.</div>
+                    <div class="lineSpace"><span class="bold">전문적인 지식</span>: 어떤 작업에 어떤 공구가 필요한지, 고객님의 궁금증을 명쾌하게 해결해 드립니다.</div>
+                    <div class="lineSpace"><span class="bold">신뢰할 수 있는 파트너</span>: 한 번의 판매로 끝나지 않고, 지속적인 지원과 서비스로 고객님의 곁을 지키겠습니다.</div>
+                    <div class="lineSpace promise-summary">당신의 손에서 시작되는 위대한 창조의 여정, 비전툴이 가장 든든한 힘이 되어드리겠습니다.</div>
                 </div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+            <div class="map-container content-box">
+                 <div class="nanum-gothic-extrabold detailTitle">오시는 길</div>
+                <img src="https://i.postimg.cc/NLvr0qGt/image.png" class="companyMap">
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
+        </main>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -92,106 +109,79 @@
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                loginFlg : false,
-                userId : "",
-                imgNum : 1,
-                search : ""
+                loginFlg: false,
+                userId: "",
+                imgNum: 1,
+                search: ""
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
-            fnList: function () {
-                let self = this;
-                let param = {};
-                $.ajax({
-                    url: "http://localhost:3009/",
-                    dataType: "json",
-                    type: "GET",
-                    data: param,
-                    success: function (data) {
-
-                    }
-                });
+            fnLoginPage() {
+                location.href = "login.html";
             },
-            fnLoginPage(){
-                location.href="login.html";
-            },
-            fnImg(){
-                let self = this;
-                let i = 1;
+            fnImg() {
                 setInterval(() => {
-                    if(i == 4){
-                        i = 0;
-                        let lastId = document.querySelector("#img4");
-                        lastId.className = "img";
-                    }
-                    i++;
-                    let bigId = document.querySelector("#img" + i);
-                    let smallId = document.querySelector("#img" + (i-1));
-                    bigId.className = "bigImg";
-                    smallId.className = "img";  
+                    const totalImages = 4;
+                    const currentBigImg = document.querySelector('.bigImg');
+                    const currentThumbnails = document.querySelectorAll('.thumbnails .img');
+                    
+                    let currentIndex = parseInt(currentBigImg.id.replace('img', ''));
+                    let nextIndex = (currentIndex % totalImages) + 1;
+
+                    const nextBigImgSrc = document.querySelector(`#img${nextIndex}`).src;
+                    const currentBigImgSrc = currentBigImg.src;
+                    
+                    currentBigImg.src = nextBigImgSrc;
+                    document.querySelector(`#img${nextIndex}`).src = currentBigImgSrc;
+
                 }, 5000);
             },
-            fnLogout(){
-                let self = this;
-                self.userId = "";
-                self.loginFlg = false;
-                location.href="main.html";
+            fnLogout() {
+                this.userId = "";
+                this.loginFlg = false;
+                location.href = "main.html";
             },
-            fnAdminCheck(){
-                let self = this;
-                let param = {
-                    userId : self.userId
-                }
+            fnAdminCheck() {
+                if (!this.userId) return;
                 $.ajax({
-                    url: "http://localhost:3009/tools/checkid",
+                    url: `http://localhost:3009/tools/checkid?userId=${this.userId}`,
                     dataType: "json",
                     type: "GET",
-                    data: param,
-                    success: function (data) {
-                        console.log(data.info.AUTHORITY);
-                        if(data.info.AUTHORITY == "A"){
-                            location.href="admin-main.html";
+                    success: (data) => {
+                        if (data.info && data.info.AUTHORITY === "A") {
+                            location.href = "admin-main.html";
                         }
                     }
                 });
             },
-            fnMyPage(){
-                let self = this;
-                location.href=`mypage.html?userId=${self.userId}&loginFlg=${self.loginFlg}`;
+            fnMyPage() {
+                location.href = `mypage.html?userId=${this.userId}`;
             },
-            fnMain(){
-                let self = this;
-                location.href=`main.html?userId=${self.userId}`;
+            fnMain() {
+                location.href = `main.html?userId=${this.userId}`;
             },
-            fnShowTool(type){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+            fnShowTool(type) {
+                location.href = `toolList.html?userId=${this.userId}&type=${type}`;
             },
-            fnGoCart(){
-                let self = this;
-                location.href=`cart-list.html?userId=${self.userId}`;
+            fnGoCart() {
+                location.href = `cart-list.html?userId=${this.userId}`;
             },
-            fnSearch(){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&search=${self.search}`
+            fnSearch() {
+                if(this.search.trim() === '') {
+                    alert('검색어를 입력해주세요.');
+                    return;
+                }
+                location.href = `toolList.html?userId=${this.userId}&search=${this.search}`;
             }
-        }, // methods
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
-            self.fnImg();
             const queryParams = new URLSearchParams(window.location.search);
-            self.userId = queryParams.get('userId') || '';
-            if(self.userId != ""){
-                self.loginFlg = true;
-            } else {
-                self.loginFlg = false;
-            }
-            self.fnAdminCheck();
+            this.userId = queryParams.get('userId') || '';
+            this.loginFlg = !!this.userId;
+            
+            this.fnImg();
+            this.fnAdminCheck();
         }
     });
-
     app.mount('#app');
 </script>

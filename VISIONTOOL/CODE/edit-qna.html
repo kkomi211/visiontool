@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의 작성 - 비전툴</title>
+    </head>
+<body>
+    <div id="app">
+        <header id="header">
+             </header>
+
+        <main id="container">
+            <div class="mypage-layout">
+                <nav class="mypage-sidebar">
+                    <ul>
+                        <li><a href="#" @click.prevent="fnMyPage">내 정보</a></li>
+                        <li><a href="#" @click.prevent="fnEditInfoPage">내 정보 수정</a></li>
+                        <li><a href="#" @click.prevent="fnOrderList">주문 내역</a></li>
+                        <li><a href="#" @click.prevent="fnQNA" class="active">문의하기</a></li>
+                    </ul>
+                </nav>
+
+                <div class="mypage-content">
+                    <div class="nanum-gothic-extrabold detailTitle">문의 작성</div>
+                    <div class="edit-form-box">
+                        <div class="input-group">
+                            <label for="qnaTitle">제목</label>
+                            <input type="text" id="qnaTitle" v-model="title" placeholder="제목을 입력하세요">
+                        </div>
+                        <div class="input-group">
+                            <label for="qnaContents">내용</label>
+                            <textarea id="qnaContents" v-model="contents" rows="10" placeholder="문의하실 내용을 입력하세요"></textarea>
+                        </div>
+                        <div class="info-actions">
+                            <button class="btn btn-secondary" @click="fnQNA">돌아가기</button>
+                            <button class="btn btn-primary" @click="fnQNAInsert">작성 완료</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            </footer>
+    </div>
+</body>
+</html>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                userId: "",
+                title: "",
+                contents: "",
+                search: ""
+            };
+        },
+        methods: {
+            fnQNAInsert() {
+                let self = this;
+                if (!self.title || !self.contents) {
+                    alert("제목과 내용을 모두 입력해주세요.");
+                    return;
+                }
+                let param = {
+                    title: self.title,
+                    contents: self.contents,
+                    userId: self.userId
+                };
+                $.ajax({
+                    url: "http://localhost:3009/tools/qna/insert",
+                    dataType: "json",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        alert("문의가 등록되었습니다.");
+                        self.fnQNA();
+                    }
+                });
+            },
+            fnQNA() {
+                location.href = `user-qna.html?userId=${this.userId}`;
+            },
+            // ... 나머지 네비게이션 함수들은 edit-user.html과 동일 ...
+        },
+        mounted() {
+            const queryParams = new URLSearchParams(window.location.search);
+            this.userId = queryParams.get('userId') || '';
+             if (!this.userId) {
+                alert('로그인이 필요한 서비스입니다.');
+                location.href = 'login.html';
+            }
+        }
+    });
+    app.mount('#app');
+</script>

@@ -1,355 +1,1589 @@
-.search {
-    position: absolute;
-    left: 230px;
-    top: 20px;
-}
-.iconSmall{
-    font-size: 28px;
-    cursor: pointer;
-}
-.inputBox{
-    height: 20px;
-    width: 200px;
-    position: absolute;
-    left: 10px;
-    top: 20px;
-}
-#title{
-    height: 300px;
-    position: relative;
-    box-sizing: border-box;
-    text-align: center;
-    padding: 0px auto;
-    display: flex;
-    align-items: center;
-    
-}
-.bold{
-    font-weight: bold;
-}
-.lineSpace{
-    margin: 20px;
-}
-.bigLineSpace{
-    margin : 100px 0px;
-}
-.big-search{
-    width: 80%;
-    margin: 0px auto;
-    background-color: gray;
-    display: flex;
-    align-items: center;
-    height: 40px;
-    justify-content: center;
+/* 기본 스타일 */
+body {
+    font-family: 'Nanum Gothic', sans-serif;
+    margin: 0;
+    background-color: #f8f9fa; /* 밝은 회색 배경 */
+    color: #343a40; /* 어두운 회색 텍스트 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.big-input{
-    width: 90%;
-    height: 20px;
-}
-#WebName{
-    margin: 30px auto;
-    font-size: 50px;
-    cursor: pointer;
-    display: inline-block;
-}
-.footer{
-    width: 80%;
-    margin: 50px auto;
-    padding: 30px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-bottom: 200px;
-    background-color: rgb(224, 224, 224);
-}
-.noDeco{
+a {
     text-decoration: none;
-    color: black;
-    box-sizing: border-box;
-}
-.nanum-gothic-regular {
-  font-family: "Nanum Gothic", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+    color: inherit;
 }
 
-.nanum-gothic-bold {
-  font-family: "Nanum Gothic", sans-serif;
-  font-weight: 700;
-  font-style: normal;
+#app {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
 }
 
-.nanum-gothic-extrabold {
-  font-family: "Nanum Gothic", sans-serif;
-  font-weight: 800;
-  font-style: normal;
-}
-#rightBox{
-    width: 20%;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    height: 60px;
-    text-align: left;
-    background-color: #2c7be2;
+/* 헤더 및 내비게이션 */
+#header {
+    background-color: #0d6efd; /* 더 선명한 파란색 */
     color: white;
-    padding: 0px 30px;
-    box-sizing: border-box;
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 2%;
+    height: 70px;
 }
-#title-admin{
-    width : 20%;
-    background-color: gray;
-    height: 60px;
-    color: white;
-    position: absolute;
-    top: 0px;
-    left: 0px;
+
+#WebName {
+    font-size: 26px;
+    font-weight: 800;
+    cursor: pointer;
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    gap: 12px;
 }
-#admin-rightBox{
-    width: 20%;
+
+#WebName .nanum-gothic-regular {
+    font-weight: 400;
+}
+
+.logo-icon {
+    font-size: 32px;
+}
+
+#title-Search {
+    flex-grow: 0.5;
+    position: relative;
+}
+
+.inputBox {
+    height: 40px;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 0 50px 0 20px;
+    font-size: 15px;
+    background-color: #f1f3f5;
+    transition: all 0.3s;
+}
+
+.inputBox:focus {
+    outline: none;
+    border-color: #0d6efd;
+    background-color: white;
+}
+
+.search.iconSmall {
     position: absolute;
-    right: 0px;
-    top: 0px;
-    height: 60px;
-    text-align: left;
-    background-color: gray;
-    color: white;
-    padding: 0px 30px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 2%;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #868e96;
 }
-.rightBox-Text{
+
+#rightBox {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.rightBox-Text, .rightBox-icon {
     cursor: pointer;
     font-size: 15px;
+    transition: opacity 0.2s;
 }
-.rightBox-icon{
-    font-size: 30px;
-    cursor: pointer;
+
+.rightBox-Text:hover, .rightBox-icon:hover {
+    opacity: 0.7;
 }
-.cursor{
-    cursor: pointer;
-}
-#category{
-    margin: 0px auto;
-    width: 80%;
-    color: white;
-    height: 80px;
-    display: flex;
-    justify-content: space-around;
-    background-color: #2c7be2;
-    font-size: 20px;
-    box-sizing: border-box;
-}
-.contents{
-    box-sizing: border-box;
-}
-.tool{
-    align-items: center;
-    width: 20%;
-    height: 80px;
-    cursor: pointer;
-    background-color: #2c7be2;
-    text-align: center;
+
+/* 카테고리 메뉴 */
+#category {
     display: flex;
     justify-content: center;
+    background-color: #ffffff;
+    padding: 15px 0;
+    border-bottom: 1px solid #dee2e6;
 }
-.tool:hover{
-    background-color: #1d1ae4;
+
+.tool {
+    cursor: pointer;
+    padding: 12px 25px;
+    margin: 0 8px;
+    background-color: #f8f9fa;
+    color: #495057;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
 }
-.userBox{
+
+.tool:hover {
+    background-color: #0d6efd;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+/* 메인 컨테이너 */
+#container {
+    padding: 40px;
+}
+
+.main-content {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+/* 이미지 슬라이더 */
+#imgBox {
+    width: 55%;
+    display: flex;
+    gap: 10px;
+    height: 450px;
+}
+
+.bigImg {
+    width: 80%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnails {
     width: 20%;
-    margin: 0px auto;
-    text-align: right;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.img {
+    width: 100%;
+    height: calc((100% - 20px) / 3);
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s;
+}
+
+.img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* 콘텐츠 섹션 */
+.contents {
+    width: 45%;
+}
+
+.content-box {
+    background-color: #ffffff;
     padding: 30px;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 10px;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
 }
-.infoBox{
-    width: 50%;
-    margin: 0px auto;
-    text-align: left;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 10px;
-    padding: 30px;
+
+.promise-box {
+    margin-top: 40px;
 }
-#container{
-    width: 80%;
-    margin: 50px auto;
-    padding: 30px;
-    box-sizing: border-box;
+
+.detailTitle {
+    font-size: 24px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #0d6efd;
+    color: #343a40;
+    font-weight: 800;
+}
+
+.nanum-gothic-regular div {
+    line-height: 1.8;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.bold {
+    font-weight: 700;
+    color: #0d6efd;
+}
+
+.lineSpace {
+    margin: 18px 0;
+}
+.promise-summary{
+    margin-top: 25px;
+    font-weight: 700;
+}
+
+/* 지도 섹션 */
+.map-container {
     text-align: center;
-    margin-bottom: 50px;
-    border: 1px solid #eee;
-    /* background-color: rgb(255, 248, 240); */
 }
-#admin-container{
-    width: 80%;
-    margin: 50px auto;
-    padding: 30px;
-    box-sizing: border-box;
-    text-align: center;
-    margin-bottom: 50px;
-    background-color: gray;
+
+.companyMap {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
 }
-#left_container{
-    float : left;
-    background-color: #2c7be2;
-    height: 600px;
-    width : 9%;
+
+/* 푸터 */
+.footer {
+    padding: 30px 40px;
+    background-color: #343a40;
+    color: #f8f9fa;
     text-align: center;
-    color: white; 
-    border-radius: 5%;
-    margin-top: 50px;
-    border: 2px solid black;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: large;
 }
-#imgBox{
-    width: 60%;
-    height: 400px;
-    text-align: center;
-    margin: 0px auto;
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.footer-info {
     display: flex;
     align-items: center;
-    
-}
-.bigBox{
-    width: 500px;
-    height: 500px;
-}
-.companyMap{
-    width: 30%;
-}
-#imgBox .bigImg{
-    width: 60%;
-    border: 2px solid black;
-    height: 100%;
-    cursor: pointer;
+    gap: 10px;
+    font-size: 15px;
+    color: #ced4da;
 }
 
-#imgBox .img{
-   width: 16%;
-   height: 30%; 
-   border: 1px solid black;
-   cursor: pointer;
+/* ========== 로그인 페이지 전용 스타일 ========== */
+
+/* 로그인 폼을 화면 중앙에 위치시키기 위한 컨테이너 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px; /* 헤더와 푸터로부터 충분한 여백 확보 */
+    background-color: #f8f9fa;
 }
 
-.detailTitle{
-    margin: 50px;
-    font-size: 40px;
-}
-.gray{
-    color: gray;
-}
-.white{
-    color: black;
-    text-shadow: white 0px 0px 10px;
-}
-table, th, td, tr {
-    border: 2px solid black;
-    border-collapse: collapse;
-    padding: 5px 15px;
-    margin: 0px auto;
-}
-th, td{
-    width: 300px;
+/* 로그인 폼 박스 스타일 */
+.login-box {
+    width: 100%;
+    max-width: 400px; /* 폼의 최대 너비 설정 */
+    padding: 40px;
     background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
-#flex-container{
-    width: 80%;
-    margin: 50px auto;
-    padding: 30px;
-    box-sizing: border-box;
-    margin-bottom: 50px;
-    /* background-color: rgb(255, 248, 240); */
-    display: grid;                                /* Grid 레이아웃을 사용합니다. */
-    grid-template-columns: repeat(4, 1fr);        /* 한 줄에 4개의 열을 만듭니다. 각 열은 동일한 비율(1fr)을 가집니다. (핵심 속성) */
-    gap: 16px;                                    /* 아이템 사이의 간격을 줍니다. */
-    border: 1px solid #eee;
-    padding: 16px;
+
+/* 로그인 폼 제목 스타일 (기존 .detailTitle 재사용) */
+.login-box .detailTitle {
+    text-align: center;
+    margin-bottom: 30px;
 }
-.product-list{
-    width: 250px;
-    /* border: 1px solid black; */
+
+/* 아이디, 비밀번호 입력 그룹 */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #495057;
+}
+
+/* 입력창(input) 스타일 */
+.login-box input[type="text"],
+.login-box input[type="password"] {
+    width: 100%;
+    height: 48px;
+    padding: 0 15px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 설정 */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 입력창 포커스 시 스타일 */
+.login-box input[type="text"]:focus,
+.login-box input[type="password"]:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+/* 버튼 그룹 */
+.btn-group {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column; /* 버튼을 세로로 배열 */
+    gap: 12px; /* 버튼 사이 간격 */
+}
+
+/* 공통 버튼 스타일 */
+.btn {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 기본 버튼 (로그인) */
+.btn-primary {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+/* 보조 버튼 (회원가입) */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5c636a;
+}
+
+/* ========== 회원가입 페이지 전용 스타일 ========== */
+
+/* 회원가입 폼 컨테이너 (로그인과 유사) */
+.join-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 40px;
+    background-color: #f8f9fa;
+}
+
+/* 회원가입 폼 박스 */
+.join-box {
+    width: 100%;
+    max-width: 550px; /* 로그인 폼보다 넓게 설정 */
+    padding: 40px;
+    background-color: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.join-box .detailTitle {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 입력창과 버튼이 한 줄에 있는 경우 */
+.input-with-button {
+    display: flex;
+    gap: 10px; /* 입력창과 버튼 사이 간격 */
+}
+
+.input-with-button input {
+    flex-grow: 1; /* 입력창이 남은 공간을 모두 차지하도록 */
+}
+
+.input-with-button button {
+    flex-shrink: 0; /* 버튼 너비가 줄어들지 않도록 */
+    width: 120px; /* 버튼 너비 고정 */
+    height: 48px;
+    padding: 0;
+}
+
+/* 일반 버튼보다 작은 보조 버튼 스타일 (중복확인, 주소찾기) */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5c636a;
+}
+.btn-secondary:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* 상세주소 입력창 위 여백 */
+.mt-10 {
+    margin-top: 10px;
+}
+
+/* 회원가입 폼의 입력창 스타일 (로그인과 공통 스타일 재사용) */
+.join-box input[type="text"],
+.join-box input[type="password"] {
+    width: 100%;
+    height: 48px;
+    padding: 0 15px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
     box-sizing: border-box;
-    margin : 0px 50px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.join-box input[readonly] {
+    background-color: #e9ecef;
     cursor: pointer;
 }
-.product-list img{
-    width: 248px;
-    height: 250px;
-    border: 1px  solid black;
-    box-sizing: border-box;
+
+.join-box input[type="text"]:focus,
+.join-box input[type="password"]:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
 }
-.price{
-    color: #1d1ae4;
+
+/* 가입하기 버튼 그룹 (로그인과 공통 스타일 재사용) */
+.join-box .btn-group {
+    margin-top: 30px;
+}
+
+/* ========== 상품 리스트 페이지 전용 스타일 ========== */
+
+/* 페이지 상단 제목 영역 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #dee2e6;
+    margin-bottom: 40px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #343a40;
+}
+
+.item-count {
+    font-size: 16px;
+    color: #868e96;
+}
+
+.item-count strong {
+    color: #0d6efd;
+    font-weight: 700;
+}
+
+/* 상품이 없을 때 표시될 메시지 */
+.no-results {
+    grid-column: 1 / -1; /* 그리드의 모든 열을 차지하도록 설정 */
+    text-align: center;
+    padding: 100px 0;
+    font-size: 18px;
+    color: #868e96;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+}
+
+/* 상품 그리드 컨테이너 */
+#product-grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개의 아이템 */
+    gap: 30px; /* 아이템 사이의 간격 */
+}
+
+/* 상품 카드 스타일 */
+.product-card {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden; /* 이미지가 카드를 벗어나지 않도록 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* 상품 이미지 래퍼 */
+.product-image-wrapper {
+    width: 100%;
+    height: 250px; /* 이미지 높이 고정 */
+    background-color: #f8f9fa;
+}
+
+.product-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 영역에 꽉 차도록 설정 */
+}
+
+/* 상품 정보 영역 */
+.product-info {
+    padding: 20px;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 10px;
+    /* 이름이 길 경우 ...으로 표시 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0d6efd;
+}
+
+/* 화면 크기에 따른 반응형 그리드 */
+@media (max-width: 992px) {
+    #product-grid-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    #product-grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    #product-grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== 마이페이지 전용 스타일 ========== */
+
+/* 마이페이지 전체 레이아웃 (사이드바 + 콘텐츠) */
+.mypage-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr; /* 사이드바 240px, 나머지는 콘텐츠 영역 */
+    gap: 30px; /* 사이드바와 콘텐츠 사이 간격 */
+    align-items: flex-start;
+}
+
+/* 사이드바 메뉴 */
+.mypage-sidebar {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.mypage-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mypage-sidebar a {
+    display: block;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #495057;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.mypage-sidebar a:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+}
+
+/* 현재 활성화된 메뉴 링크 스타일 */
+.mypage-sidebar a.active {
+    background-color: #0d6efd;
+    color: white;
     font-weight: bold;
 }
 
-.product-list :hover{
-    text-shadow: 0px 0px 10px rgb(175, 163, 163);
+/* 메인 콘텐츠 영역 */
+.mypage-content {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 30px 40px;
 }
-.detail-img{
-    border: 1px solid black;
-    width: 500px;
-    height: 500px;
-    display: flex;
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; 
-    float: left;
+
+/* 사용자 정보 표시 박스 */
+.user-info-box {
+    margin-top: 30px;
 }
-.detail-img img{
+
+/* 정보 그리드 (라벨 + 내용) */
+.info-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr; /* 라벨 150px, 내용 나머지 */
+    gap: 20px 15px; /* 세로, 가로 간격 */
+    font-size: 16px;
+}
+
+.info-grid dt { /* 라벨(항목 이름) 스타일 */
+    font-weight: 700;
+    color: #868e96;
+    padding-right: 15px;
+    text-align: right;
+    border-right: 2px solid #e9ecef;
+}
+
+.info-grid dd { /* 내용 스타일 */
+    margin: 0;
+    color: #343a40;
+}
+
+/* 정보 수정하기 버튼 영역 */
+.info-actions {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+}
+
+/* 정보 수정하기 버튼 크기 조절 */
+.info-actions .btn {
+    width: auto;
+    padding: 12px 25px;
+}
+
+/* ========== 마이페이지 콘텐츠 공통 스타일 ========== */
+
+.edit-form-box {
+    margin-top: 30px;
+}
+
+/* 텍스트 입력창(textarea) 스타일 */
+.edit-form-box textarea {
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    resize: vertical; /* 세로 크기만 조절 가능 */
+    min-height: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
-.product-name{
-    font-size: 50px;
-    margin-bottom: 50px;
+
+.edit-form-box textarea:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
 }
-.product-detail{
-    font-size: 25px;
-    margin: 20px;
+
+.info-actions {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    gap: 10px;
 }
-.product-detail2{
-    font-size: 25px;
-    margin-top: 100px;
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
-.product-detail2 button{
-    margin: 0px 20px;
-    width: 50px;
-    height: 35px;
+
+.content-header .detailTitle {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.content-header .btn {
+    height: 42px;
+    padding: 0 20px;
+}
+
+.no-results-box {
+    text-align: center;
+    padding: 80px 0;
+    font-size: 18px;
+    color: #868e96;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+}
+
+/* ========== 주문 내역 페이지 스타일 ========== */
+.order-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    background-color: #fff;
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+}
+
+.order-date {
+    font-weight: 700;
+    color: #343a40;
+}
+
+.order-id {
+    color: #868e96;
+}
+
+.order-card-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.order-item-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.order-item-details {
+    flex-grow: 1;
+}
+
+.order-item-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.order-item-info {
+    font-size: 14px;
+    color: #868e96;
+    line-height: 1.6;
+}
+
+.order-item-price {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.order-status-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.btn-sm {
+    height: 36px;
+    padding: 0 15px;
+    font-size: 14px;
+}
+
+/* ========== 문의 내역 페이지 스타일 ========== */
+.qna-list-container {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    overflow: hidden; /* 테이블의 둥근 모서리 적용 */
+}
+
+.qna-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.qna-table th, .qna-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.qna-table thead {
+    background-color: #f8f9fa;
+}
+
+.qna-table th {
+    font-weight: 700;
+    color: #495057;
+}
+
+.qna-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.qna-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.qna-table tbody tr:last-child td {
+    border-bottom: none; /* 마지막 줄의 하단선 제거 */
+}
+
+.qna-table .qna-title {
+    text-align: left;
+    width: 60%;
+}
+
+.no-results-row td {
+    padding: 60px 0;
+    color: #868e96;
+}
+
+/* ========== 상태 표시 태그 공통 스타일 ========== */
+.status-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 15px;
+    color: white;
+    white-space: nowrap;
+}
+
+.status-pending { /* 답변대기, 결제대기 등 */
+    background-color: #ffc107; /* 노란색 */
+}
+
+.status-shipping { /* 배송중 */
+    background-color: #17a2b8; /* 청록색 */
+}
+
+.status-completed { /* 답변완료, 배송완료 등 */
+    background-color: #28a745; /* 녹색 */
+}
+/* ========== 마이페이지 공통 레이아웃 ========== */
+.mypage-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+.mypage-sidebar {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+}
+.mypage-sidebar ul { list-style: none; margin: 0; padding: 0; }
+.mypage-sidebar a {
+    display: block;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #495057;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.mypage-sidebar a:hover { background-color: #f8f9fa; color: #0d6efd; }
+.mypage-sidebar a.active { background-color: #0d6efd; color: white; font-weight: bold; }
+.mypage-content {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 30px 40px;
+}
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.content-header .detailTitle { margin-bottom: 0; border-bottom: none; }
+.content-header .btn { height: 42px; padding: 0 20px; }
+
+/* ========== 문의/주문 내역 테이블 스타일 ========== */
+.list-container {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    table-layout: fixed; /* 테이블 너비를 고정하여 깨짐 방지 */
+}
+
+.data-table th, .data-table td {
+    padding: 18px 15px;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.data-table thead {
+    background-color: #f8f9fa;
+}
+
+.data-table th {
+    font-weight: 700;
+    color: #495057;
+}
+
+.data-table tbody tr {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table .no-results-row td {
+    padding: 80px 0;
+    color: #868e96;
+    cursor: default;
+}
+.data-table .no-results-row:hover {
+    background-color: transparent;
+}
+
+/* 각 열(column)의 너비와 정렬 설정 */
+.data-table .col-id     { width: 10%; }
+.data-table .col-title  { width: 55%; text-align: left; }
+.data-table .col-date   { width: 20%; }
+.data-table .col-status { width: 15%; }
+
+/* 제목이 길어질 경우 ...으로 표시 (깨짐 방지 핵심) */
+.title-cell {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%; /* 부모 td 너비에 맞춤 */
+}
+
+
+/* ========== 상태 표시 태그 공통 스타일 ========== */
+.status-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 15px;
+    color: white;
+    white-space: nowrap;
+}
+.status-pending { background-color: #ffc107; }
+.status-completed { background-color: #28a745; }
+
+/* ========== 문의 상세 보기 페이지 스타일 ========== */
+
+/* 질문/답변 내용을 담는 박스 */
+.qna-view-box, .qna-answer-box {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin-top: 30px;
+}
+
+/* 질문 박스 */
+.qna-view-box {
+    background-color: #fff;
+}
+
+/* 답변 박스 */
+.qna-answer-box {
+    background-color: #f8f9fa; /* 답변은 다른 배경색으로 구분 */
+}
+
+/* 질문/답변 헤더 (제목, 메타 정보) */
+.qna-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.qna-title {
     font-size: 20px;
-    background-color: white;
-    box-shadow: 0px 0px 2px black;
+    font-weight: 700;
+    color: #343a40;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.answer-icon {
+    font-size: 24px;
+    color: #0d6efd;
+}
+
+.qna-meta {
+    font-size: 14px;
+    color: #868e96;
+    display: flex;
+    gap: 15px;
+}
+
+/* 질문/답변 본문 */
+.qna-content {
+    padding: 30px 25px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #495057;
+    white-space: pre-wrap; /* 줄바꿈과 공백을 그대로 표시 */
+}
+
+/* 답변이 없을 때 표시될 박스 */
+.no-answer {
+    padding: 60px 25px;
+    text-align: center;
+    color: #868e96;
+}
+.no-answer .material-symbols-outlined {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+.no-answer p {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* 목록으로 돌아가기 버튼 영역 */
+.view-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* ========== 주문 내역 카드 디자인 ========== */
+.order-list-container-final {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* 카드 사이의 간격 */
+}
+
+.order-card-final {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.order-card-header-final {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 14px;
+    color: #868e96;
+}
+.order-card-header-final .label {
+    font-weight: 700;
+}
+.order-card-header-final .value {
+    color: #495057;
+    margin-left: 8px;
+}
+
+.order-card-body-final {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.order-card-body-final .product-image {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.order-card-body-final .product-details {
+    flex-grow: 1; /* 남은 공간을 모두 차지 */
+}
+.product-details p {
+    margin: 4px 0; /* 위아래 여백 */
+}
+.product-details .product-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #343a40;
+}
+.product-details .product-quantity {
+    font-size: 15px;
+    color: #868e96;
+}
+.product-details .product-total-price {
+    font-size: 17px;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.order-card-body-final .order-status {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: flex-end; /* 오른쪽 정렬 */
+    gap: 10px; /* 상태와 버튼 사이 간격 */
+    white-space: nowrap; /* 글자 줄바꿈 방지 */
+}
+
+/* ========== 관리자 페이지 공통 스타일 ========== */
+.admin-body {
+    background-color: #f4f7f9; /* 연한 회색 배경 */
+    color: #343a40;
+}
+
+/* 관리자 헤더 */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #343a40; /* 다크 그레이 헤더 */
+    color: #fff;
+    padding: 0 30px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+.admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    color: #fff;
+}
+.admin-logo .material-symbols-outlined {
+    font-size: 28px;
+    color: #0d6efd; /* 포인트 컬러 */
+}
+.admin-tag {
+    font-size: 12px;
+    background-color: #6c757d;
+    padding: 3px 8px;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.admin-nav a {
+    color: #ced4da;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+.admin-nav a:hover {
+    background-color: #495057;
+    color: #fff;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #ced4da;
+    transition: color 0.2s;
+}
+.logout-btn:hover {
+    color: #fff;
+}
+
+
+/* 관리자 메인 컨테이너 */
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.admin-page-title h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+}
+.admin-page-title p {
+    font-size: 16px;
+    color: #868e96;
+    margin: 5px 0 30px 0;
+}
+
+
+/* 2단 그리드 레이아웃 */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+/* 대시보드 위젯(카드) */
+.admin-widget {
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+.widget-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+}
+.view-more {
+    font-size: 14px;
+    font-weight: 700;
+    color: #868e96;
     cursor: pointer;
 }
-.cart-box{
-    /* border: 1px solid black; */
-    box-shadow: 0px 0px 5px gray;
+.view-more:hover {
+    color: #0d6efd;
+}
+
+.widget-body {
+    padding: 10px;
+}
+
+/* 관리자 페이지 테이블 */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th, .admin-table td {
+    padding: 15px;
     text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.admin-table thead {
+    background-color: #f8f9fa;
+}
+.admin-table th {
+    font-size: 14px;
+    font-weight: 700;
+    color: #495057;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.admin-table tbody td {
+    font-size: 15px;
+    color: #495057;
+}
+.admin-table .table-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+.admin-table tbody tr td:first-child { text-align: center; } /* 번호 중앙 정렬 */
+.admin-table thead tr th:first-child { text-align: center; }
+
+/* 기존 상태 태그 재사용 */
+.status-tag {
+    font-size: 12px;
+}
+
+/* ========== 관리자 페이지 폼 스타일 ========== */
+.widget-body.form-layout {
     padding: 30px;
-    height: 350px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2단 그리드 폼 */
+    gap: 20px 30px; /* 세로, 가로 간격 */
 }
-.cart-box img{
-    width: 300px;
-    height: 300px;
-    float: left;
+
+.form-group {
+    display: flex;
+    flex-direction: column;
 }
-.check-cart{
-    width: 30px;
-    height: 30px;
+.form-group.inline {
+    grid-column: span 1; /* 한 칸만 차지 */
+}
+.form-group.full-width {
+    grid-column: 1 / -1; /* 그리드 전체 너비 차지 */
+}
+
+.form-group label {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.admin-input, .admin-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-input:focus, .admin-textarea:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+.admin-textarea {
+    resize: vertical;
+}
+
+.admin-radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    height: 48px; /* input 높이와 맞춤 */
+}
+.admin-radio-group label {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.admin-radio-group input[type="radio"] {
+    width: 18px;
+    height: 18px;
+}
+
+.form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* 관리자 페이지 내비게이션 활성 상태 */
+.admin-nav a.active {
+    background-color: #0d6efd;
+    color: #fff;
+}
+/* ========== 관리자 페이지 위젯 내부 컨트롤 ========== */
+.widget-controls {
+    display: flex;
+    gap: 10px;
+}
+.search-input {
+    width: 250px;
+    height: 40px;
+    padding: 0 15px;
+}
+.widget-controls .btn {
+    height: 40px;
+    padding: 0 20px;
+}
+
+/* 관리자 테이블 내부 스타일 */
+.admin-table .table-link {
+    font-weight: 700;
+    color: #0d6efd;
+    text-decoration: none;
+}
+.admin-table .table-link:hover {
+    text-decoration: underline;
+}
+.admin-table .text-center { text-align: center; }
+.admin-table .text-right { text-align: right; }
+
+/* 위젯 푸터 (페이지네이션 등) */
+.widget-footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    border-top: 1px solid #e9ecef;
+}
+.pagination {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.pagination span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #868e96;
+    cursor: pointer;
+}
+.pagination span:hover {
+    background-color: #f8f9fa;
+}
+.pagination span.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    font-weight: 700;
+}
+/* ========== 관리자 페이지 폼 추가 스타일 ========== */
+
+/* 비활성화된 입력창 스타일 */
+.admin-input:disabled {
+    background-color: #e9ecef;
+    color: #868e96;
+    cursor: not-allowed;
+}
+
+/* 이미지 미리보기 영역 */
+.image-preview {
+    width: 100%;
+    min-height: 100px;
+    border: 1px dashed #ced4da;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+.image-preview span {
+    color: #868e96;
+    font-weight: 700;
+}
+
+
+/* 버튼 추가 스타일 */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+/* ========== 관리자 페이지 위젯 필터 ========== */
+.filter-group {
+    display: flex;
+    gap: 5px;
+}
+.btn-filter {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    height: 40px;
+    padding: 0 15px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-filter:hover {
+    background-color: #e9ecef;
+}
+.btn-filter.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+/* 테이블 내 상태 변경 링크 */
+.status-link {
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s;
+}
+.status-link:hover {
+    transform: scale(1.1);
+}
+
+/* ========== 관리자 페이지 문의 답변 스타일 ========== */
+.admin-grid-col-1 {
+    display: grid;
+    grid-template-columns: 1fr; /* 1단 레이아웃 */
+    gap: 30px;
+}
+
+.qna-view-area {
+    padding: 30px;
+}
+.qna-view-area h4 {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+}
+.qna-meta-info {
+    font-size: 14px;
+    color: #868e96;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+.qna-meta-info span {
+    margin-right: 20px;
+}
+.qna-content-text {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #495057;
+    white-space: pre-wrap;
+    min-height: 100px;
+}
+
+/* 1단 그리드 폼 레이아웃 */
+.form-layout-single {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+.form-layout-single .form-actions {
+    grid-column: 1 / -1;
 }

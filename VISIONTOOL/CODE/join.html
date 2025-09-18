@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>회원가입 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -11,74 +11,87 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox">
-                <span class="material-symbols-outlined search iconSmall">search</span>
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search"></div>
+                <div id="rightBox"></div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span class="material-symbols-outlined rightBox-icon">shopping_cart</span>
-            </div>
-        </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
-        </div>
-        <div id="container">
-            <div class="userBox">
+            <nav id="category"></nav>
+        </header>
+
+        <main id="container" class="join-container">
+            <div class="join-box">
                 <div class="nanum-gothic-extrabold detailTitle">회원가입</div>
-                <div class="lineSpace">
-                    아이디 : <input type="text" v-model="userId" v-if="!idCheck">
-                    <input type="text" v-model="userId" v-else disabled>
-                    <button @click="fnCheckId">중복확인</button>
+                
+                <div class="input-group">
+                    <label for="userId">아이디</label>
+                    <div class="input-with-button">
+                        <input type="text" id="userId" v-model="userId" placeholder="아이디를 입력하세요" :disabled="idCheck">
+                        <button class="btn btn-secondary" @click="fnCheckId" :disabled="idCheck">{{ idCheck ? '확인완료' : '중복확인' }}</button>
+                    </div>
                 </div>
-                <div class="lineSpace">
-                    비밀번호 : <input type="password" v-model="userPsd">
+
+                <div class="input-group">
+                    <label for="userPsd">비밀번호</label>
+                    <input type="password" id="userPsd" v-model="userPsd" placeholder="비밀번호를 입력하세요">
                 </div>
-                <div class="lineSpace">
-                    이메일 : <input type="text" v-model="userEmail">
+
+                <div class="input-group">
+                    <label for="userEmail">이메일</label>
+                    <input type="text" id="userEmail" v-model="userEmail" placeholder="example@email.com">
                 </div>
-                <div class="lineSpace">
-                    닉네임 : <input type="text" v-model="userName">
+
+                <div class="input-group">
+                    <label for="userName">닉네임</label>
+                    <input type="text" id="userName" v-model="userName" placeholder="닉네임을 입력하세요">
                 </div>
-                <div class="lineSpace">
-                    전화번호 : <input type="text" v-model="userPhone">
+                
+                <div class="input-group">
+                    <label for="userPhone">전화번호</label>
+                    <input type="text" id="userPhone" v-model="userPhone" placeholder="'-' 없이 숫자만 입력">
                 </div>
-                <div class="lineSpace">
-                    주소 : 
-                    <input type="text" v-model="userAddr" placeholder="도로명주소">
-                    <input type="text" v-model="userDetailAddr" placeholder="상세주소"><br>
-                    <input type="button" @click="execDaumPostcode()" value="주소찾기">
+
+                <div class="input-group">
+                    <label>주소</label>
+                    <div class="input-with-button">
+                        <input type="text" v-model="userAddr" placeholder="도로명주소" readonly>
+                        <button class="btn btn-secondary" @click="execDaumPostcode">주소찾기</button>
+                    </div>
+                    <input type="text" v-model="userDetailAddr" placeholder="상세주소를 입력하세요" class="mt-10">
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" @click="fnJoin">가입하기</button>
                 </div>
             </div>
-            <button @click="fnJoin">가입하기</button>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -87,113 +100,90 @@
     const app = Vue.createApp({
         data() {
             return {
-                // 변수 - (key : value)
-                idCheck : false,
-                loginFlg : false,
-                userId : "",
-                userPsd : "",
-                userEmail : "",
-                userName : "",
-                userPhone : "",
-                userAddr : "",
-                userDetailAddr : ""
+                idCheck: false,
+                userId: "",
+                userPsd: "",
+                userEmail: "",
+                userName: "",
+                userPhone: "",
+                userAddr: "",
+                userDetailAddr: ""
             };
         },
         methods: {
-            // 함수(메소드) - (key : function())
-            fnJoin: function () {
+            fnJoin() {
                 let self = this;
-                let param = {
-                    userId : self.userId,
-                    userPsd : self.userPsd,
-                    userEmail : self.userEmail,
-                    userName : self.userName,
-                    userPhone : self.userPhone,
-                    userAddr : self.userAddr,
-                    userDetailAddr : self.userDetailAddr
-                };
-                if(!self.idCheck){
-                    alert("아이디 중복체크를 해주세요!");
+                if (!self.idCheck) {
+                    alert("아이디 중복 확인을 해주세요.");
                     return;
                 }
+                if (!self.userId || !self.userPsd || !self.userName || !self.userEmail) {
+                    alert("필수 정보를 모두 입력해주세요.");
+                    return;
+                }
+
+                let param = {
+                    userId: self.userId,
+                    userPsd: self.userPsd,
+                    userEmail: self.userEmail,
+                    userName: self.userName,
+                    userPhone: self.userPhone,
+                    userAddr: self.userAddr,
+                    userDetailAddr: self.userDetailAddr
+                };
+                
                 $.ajax({
                     url: "http://localhost:3009/tools/join",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data);
-                        alert("회원가입 완료!");
-                        location.href=`login.html`;
+                        alert("회원가입이 완료되었습니다!");
+                        location.href = `login.html`;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Join failed:", error);
+                        alert("회원가입 중 오류가 발생했습니다.");
                     }
                 });
             },
-            fnCheckId(){
+            fnCheckId() {
                 let self = this;
-                let param = {
-                    userId : self.userId,
-                };
-                if(self.userId == ""){
-                    alert("아이디를 입력해주세용");
+                if (self.userId.trim() === "") {
+                    alert("아이디를 입력해주세요.");
                     return;
                 }
+                let param = { userId: self.userId };
                 $.ajax({
                     url: "http://localhost:3009/tools/checkid",
                     dataType: "json",
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log(data.info);
-                        if(data.info == undefined){
+                        if (data.info === undefined) {
+                            alert("사용 가능한 아이디입니다.");
                             self.idCheck = true;
                         } else {
-                            alert("중복된 아이디입니다!");
+                            alert("이미 사용 중인 아이디입니다.");
+                            self.idCheck = false;
                         }
                     }
                 });
-            },
-            fnLoginPage(){
-                location.href="login.html";
             },
             execDaumPostcode() {
                 let self = this;
                 new daum.Postcode({
                     oncomplete: function(data) {
-                        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
-                        // 도로명 주소의 노출 규칙에 따라 주소를 표시한다.
-                        // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                        var roadAddr = data.roadAddress; // 도로명 주소 변수
-                        var extraRoadAddr = ''; // 참고 항목 변수
-
-                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-                            extraRoadAddr += data.bname;
-                        }
-                        // 건물명이 있고, 공동주택일 경우 추가한다.
-                        if(data.buildingName !== '' && data.apartment === 'Y'){
-                        extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                        }
-                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                        if(extraRoadAddr !== ''){
-                            extraRoadAddr = ' (' + extraRoadAddr + ')';
-                        }
-
-                        // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                        self.userAddr = roadAddr;
+                        self.userAddr = data.roadAddress;
                     }
-                }).open()
+                }).open();
             },
-            fnShowTool(type){
-                let self = this;
-                location.href=`toolList.html?userId=${self.userId}&type=${type}`;
+            fnMain() {
+                location.href = "main.html";
             }
-        }, // methods
+        },
         mounted() {
-            // 처음 시작할 때 실행되는 부분
-            let self = this;
-            self.idCheck == false;
+            this.idCheck = false;
         }
     });
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문의 내역 - 비전툴</title>
+    <title>문의 상세 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -47,40 +47,42 @@
                 </nav>
 
                 <div class="mypage-content">
-                    <div class="content-header">
-                        <h2 class="detailTitle nanum-gothic-extrabold">문의 내역</h2>
-                    </div>
+                    <h2 class="detailTitle nanum-gothic-extrabold">문의 상세 보기</h2>
                     
-                    <div class="list-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th class="col-id">번호</th>
-                                    <th class="col-title">제목</th>
-                                    <th class="col-date">작성일</th>
-                                    <th class="col-status">답변상태</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-if="qnaList.length === 0">
-                                    <td colspan="4" class="no-results-row">
-                                        작성된 문의 내역이 없습니다.
-                                    </td>
-                                </tr>
-                                <tr v-for="item in qnaList" :key="item.QNA_ID" @click="fnQNADetail(item.QNA_ID)">
-                                    <td>{{ item.QNA_ID }}</td>
-                                    <td>
-                                        <div class="title-cell">{{ item.TITLE }}</div>
-                                    </td>
-                                    <td>{{ formatDate(item.CDATETIME) }}</td>
-                                    <td>
-                                        <span :class="['status-tag', getStatusClass(item.STATUS)]">{{ item.STATUS }}</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="qna-view-box">
+                        <div class="qna-header">
+                            <h3 class="qna-title">{{ qnaInfo.TITLE }}</h3>
+                            <div class="qna-meta">
+                                <span>작성자: {{ userId }}</span>
+                                <span>작성일: {{ formatDate(qnaInfo.CDATETIME) }}</span>
+                            </div>
+                        </div>
+                        <div class="qna-content">
+                            {{ qnaInfo.CONTENTS }}
+                        </div>
                     </div>
-                    <br><button class="btn btn-primary" @click="fnEditQNA">문의 작성하기</button>
+
+                    <div class="qna-answer-box">
+                        <div v-if="qnaInfo.ANSWER">
+                            <div class="qna-header">
+                                <h3 class="qna-title"><span class="material-symbols-outlined answer-icon">subdirectory_arrow_right</span> 답변 내용</h3>
+                                <div class="qna-meta">
+                                    <span>답변일: {{ formatDate(qnaInfo.ANSWER_CDATETIME) }}</span>
+                                </div>
+                            </div>
+                            <div class="qna-content">
+                                {{ qnaInfo.ANSWER }}
+                            </div>
+                        </div>
+                        <div v-else class="no-answer">
+                            <span class="material-symbols-outlined">hourglass_empty</span>
+                            <p>아직 답변이 등록되지 않았습니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="view-actions">
+                        <button class="btn btn-secondary" @click="fnQNA">목록으로 돌아가기</button>
+                    </div>
                 </div>
             </div>
         </main>
@@ -108,38 +110,34 @@
         data() {
             return {
                 userId: "",
-                qnaList: [],
+                qnaId: "",
+                qnaInfo: {},
                 search: ""
             };
         },
         methods: {
-            fnQNAList() {
+            fnQNAInfo() {
                 let self = this;
+                let param = { qnaId: self.qnaId };
                 $.ajax({
-                    url: `http://localhost:3009/tools/qna/list?userId=${self.userId}`,
+                    url: "http://localhost:3009/tools/qna/info",
                     dataType: "json",
                     type: "GET",
+                    data: param,
                     success: function (data) {
-                        self.qnaList = data.boardList;
+                        self.qnaInfo = data.info;
                     }
                 });
             },
             formatDate(datetime) {
-                return datetime ? datetime.split('T')[0] : '';
+                return datetime ? datetime.split('T')[0] : 'N/A';
             },
-            getStatusClass(status) {
-                return status === '답변완료' ? 'status-completed' : 'status-pending';
-            },
-            fnQNADetail(qnaId) {
-                location.href = `qna-detail.html?userId=${this.userId}&qnaId=${qnaId}`;
-            },
-            fnEditQNA() {
-                location.href = `edit-qna.html?userId=${this.userId}`;
+            fnQNA() {
+                location.href = `user-qna.html?userId=${this.userId}`;
             },
             fnEditInfoPage() { location.href = `edit-user.html?userId=${this.userId}`; },
             fnMyPage() { location.href = `mypage.html?userId=${this.userId}`; },
             fnOrderList() { location.href = `order-list.html?userId=${this.userId}`; },
-            fnQNA() { location.href = `user-qna.html?userId=${this.userId}`; },
             fnLogout() { location.href = "main.html"; },
             fnMain() { location.href = `main.html?userId=${this.userId}`; },
             fnGoCart() { location.href = `cart-list.html?userId=${this.userId}`; },
@@ -148,12 +146,13 @@
         mounted() {
             const queryParams = new URLSearchParams(window.location.search);
             this.userId = queryParams.get('userId') || '';
-            if (!this.userId) {
-                alert('로그인이 필요한 서비스입니다.');
-                location.href = 'login.html';
+            this.qnaId = queryParams.get('qnaId') || '';
+            if (!this.userId || !this.qnaId) {
+                alert('잘못된 접근입니다.');
+                location.href = `mypage.html?userId=${this.userId}`;
                 return;
             }
-            this.fnQNAList();
+            this.fnQNAInfo();
         }
     });
     app.mount('#app');

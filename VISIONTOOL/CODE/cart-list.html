@@ -1,45 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>장바구니 - 비전툴</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link href="style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Jua&family=Nanum+Brush+Script&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
-        <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div id="title">
-            <div id="title-Search">
-                <input type="text" class="inputBox" v-model="search">
-                <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+        <header id="header">
+            <div id="title">
+                <div id="WebName">
+                    <a @click="fnMain" class="noDeco">
+                        <span class="material-symbols-outlined logo-icon">construction</span>
+                        <span class="nanum-gothic-regular">비전툴 </span>
+                        <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
+                    </a>
+                </div>
+                <div id="title-Search">
+                    <input type="text" class="inputBox" v-model="search" @keyup.enter="fnSearch" placeholder="검색어를 입력하세요">
+                    <span class="material-symbols-outlined search iconSmall" @click="fnSearch">search</span>
+                </div>
+                <div id="rightBox">
+                    <span class="rightBox-Text" v-if="!userId" @click="fnLoginPage">로그인</span>
+                    <span v-if="userId" class="rightBox-Text" @click="fnLogout">로그아웃</span>
+                    <span v-if="userId" class="rightBox-Text" @click="fnMyPage">마이페이지</span>
+                    <span v-if="userId" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
+                </div>
             </div>
-            <div id="WebName">
-                <a @click="fnMain" class="noDeco">
-                    <span class="nanum-gothic-regular">비전툴 </span>  
-                    <span class="nanum-gothic-extrabold"> VISIONTOOL</span>
-                </a>
-            </div>
-            <div id="rightBox">
-                <span class="rightBox-Text" v-if="userId == ''" @click="fnLoginPage">로그인 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnLogout">로그아웃 </span>
-                <span v-if="userId != ''" class="rightBox-Text" @click="fnMyPage">마이페이지 </span>
-                <span v-if="userId != ''" class="material-symbols-outlined rightBox-icon" @click="fnGoCart">shopping_cart</span>
-            </div>
-        </div>
-        <div id="category">
-            <span class="tool" @click="fnShowTool('')">전체보기</span>
-            <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
-            <span class="tool" @click="fnShowTool('수공구')">수공구</span>
-            <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
-        </div>
-        <div id="container">
+            <nav id="category">
+                <span class="tool" @click="fnShowTool('')">전체보기</span>
+                <span class="tool" @click="fnShowTool('전동공구')">전동공구</span>
+                <span class="tool" @click="fnShowTool('수공구')">수공구</span>
+                <span class="tool" @click="fnShowTool('측량공구')">계측공구</span>
+            </nav>
+        </header>
+
+        <main id="container">
             <div class="nanum-gothic-extrabold detailTitle">장바구니</div>
             <div v-for="ITEM in list">
                 <div class="cart-box">
@@ -48,20 +51,26 @@
                     <div class="product-detail">개수 : {{ITEM.QUANTITY}} 개</div>
                     <div class="product-detail price">가격 : {{ITEM.QUANTITY * proList[ITEM.PRODUCT_ID-1].PRICE}} 원 </div>
                     <label><div class="product-detail">구매 <input class="check-cart" type="checkbox"></div></label>
-                    <button @click="fnBuy(ITEM.CART_ID, ITEM.PRODUCT_ID, ITEM.QUANTITY)">구매하기</button>
+                    <button @click="fnBuy(ITEM.CART_ID, ITEM.PRODUCT_ID, ITEM.QUANTITY, ITEM.QUANTITY * proList[ITEM.PRODUCT_ID-1].PRICE)">구매하기</button>
                 </div>
             </div>
-        </div>
-        <div class="footer gray">
-            <div>
-                <span class="material-symbols-outlined iconSmall">call</span>
-                032-515-8024
+        </main>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span class="material-symbols-outlined iconSmall">call</span>
+                    <span>032-515-8024</span>
+                </div>
+                <div class="footer-info">
+                    <span class="material-symbols-outlined">location_on</span>
+                    <span>인천광역시 부평구 길주로 416-4 (산곡동 119-33)</span>
+                </div>
+                 <div class="footer-info">
+                    <span>(주)비전툴</span>
+                </div>
             </div>
-            <div>
-                <span class="material-symbols-outlined">location_on</span>
-                길주로 416-4 (길주로 416-4) 지번 : 산곡동 119-33
-            </div>
-        </div>
+        </footer>
     </div>
 </body>
 </html>
@@ -140,12 +149,14 @@
                 let self = this;
                 location.href=`cart-list.html?userId=${self.userId}`;
             },
-            fnBuy(itemId, productId, stock){
+            fnBuy(itemId, productId, stock, totalPrice){
+                console.log(productId);
+                
                 let self = this;
                 let param = {
                     cartId : itemId
                 }
-                self.fnProductBuy(productId, stock);
+                self.fnProductBuy(productId, stock, totalPrice);
                 $.ajax({
                     url: "http://localhost:3009/tools/cart/delete",
                     dataType: "json",
@@ -159,12 +170,15 @@
                 });
                 
             },
-            fnProductBuy(productId, stock){
+            fnProductBuy(productId, stock, totalPrice){
                 let self = this;
+                console.log(productId);
+                
                 let param = {
                     productId : productId,
                     stock : stock
                 }
+                self.fninputOrder(productId, stock, totalPrice);
                 $.ajax({
                     url: "http://localhost:3009/tools/product/stock/update",
                     dataType: "json",
@@ -172,17 +186,17 @@
                     data: param,
                     success: function (data) {
                         console.log("재고 수정 완료");
-                        self.fninputOrder(productId, stock);
                     }
                 });
             },
-            fninputOrder(product, stock){ // 해야댐
+            fninputOrder(productId, stock, totalPrice){ // 해야댐
                 let self = this;
                 let param = {
                     productId : productId,
                     stock : stock,
                     userId : self.userId,
-                    address : self.address
+                    address : self.address,
+                    totalPrice : totalPrice
                 }
                 $.ajax({
                     url: "http://localhost:3009/tools/order/insert",
@@ -190,8 +204,8 @@
                     type: "GET",
                     data: param,
                     success: function (data) {
-                        console.log("재고 수정 완료");
-                        self.fninputOrder();
+                        console.log("주문 입력 완료");
+                        
                     }
                 });
             },
@@ -213,6 +227,10 @@
                         self.address = data.info.ADDRESS;
                     }
                 });
+            },
+            fnMyPage(){
+                let self = this;
+                location.href=`mypage.html?userId=${self.userId}`;
             }
         }, // methods
         mounted() {
